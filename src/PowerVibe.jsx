@@ -546,9 +546,23 @@ export default function PowerVibe() {
                 <p className="text-sm text-neutral-600 dark:text-neutral-400 -mt-0.5">
                   On-set power calculator for camera departments
                 </p>
-              </div>
-            </div>
-          </div>
+
+        {/* Feedback Link */}
+        <p className="mt-8 text-center text-xs text-neutral-500 dark:text-neutral-400">
+          Have feedback or found a bug?{' '}
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSfll08upLZSWXMHzvVahlqPaKWuHh2wixlQvnhQRUF0exGB_Q/viewform?usp=dialog"
+            target="_blank"
+            rel="noreferrer"
+            className="underline underline-offset-2 hover:text-neutral-700 dark:hover:text-neutral-300"
+          >
+            <span className="text-amber-600 dark:text-amber-400 font-semibold">Submit feedback here</span>
+          </a>
+          .
+        </p>
+      </div>
+    </div>
+  </div>
         </header>
 
         {/* Preset pickers */}
