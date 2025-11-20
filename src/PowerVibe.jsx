@@ -501,10 +501,10 @@ export default function PowerVibe() {
 
   // Shared input/select classes
   const inputClass =
-    "px-3 py-2 rounded-xl border bg-white dark:bg-neutral-900 dark:border-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 transition";
+    "px-3 py-2 rounded-xl border bg-white text-black dark:bg-neutral-800 dark:text-white dark:border-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 transition";
   const selectWrap = "relative w-full";
   const selectClass =
-    "appearance-none w-full px-3 py-2 rounded-xl border bg-white dark:bg-neutral-900 dark:border-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 pr-9";
+    "appearance-none w-full px-3 py-2 rounded-xl border bg-white text-black dark:bg-neutral-800 dark:text-white dark:border-neutral-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 pr-9";
 
   // Explicit select sizes (undefined is omitted by React)
   const cameraSelectSize = isIOS ? undefined : 5;
