@@ -100,6 +100,9 @@ const PRESETS = {
     { name: "Aputure AL-M9 Mini Light", watts: 9, brand: "Aputure" },
     { name: "Lume Cube Panel Pro", watts: 16, brand: "Lume Cube" },
 
+    // Rain deflectors
+    { name: "Movmax Hurricane Rain Deflector", watts: 24, brand: "Movmax" },
+
     // Stabilisation
     { name: "DJI Ronin 2", watts: 60, brand: "DJI", common: true },
     { name: "DJI Ronin 2 (Gimbal Only)", watts: 40, brand: "DJI" },
@@ -424,26 +427,35 @@ function BatteryBar({ hours = 0 }) {
 // =============================
 export default function PowerVibe() {
   // Theme (auto from system, no manual toggle button)
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== "undefined" && window.matchMedia) {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    return false;
+  });
+
   useEffect(() => {
-    try {
-      const hasWindow = typeof window !== "undefined";
-      const hasDoc = typeof document !== "undefined";
-      const mql =
-        hasWindow && window.matchMedia
-          ? window.matchMedia("(prefers-color-scheme: dark)")
-          : null;
-      const preferred = !!(mql && mql.matches);
-      setIsDark(preferred);
-      if (hasDoc) document.documentElement.classList.toggle("dark", preferred);
-    } catch {}
-  }, []);
-  useEffect(() => {
-    try {
-      if (typeof document !== "undefined") {
-        document.documentElement.classList.toggle("dark", isDark);
+    if (typeof window === "undefined" || !window.matchMedia) return undefined;
+    const mql = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (event) => setIsDark(event.matches);
+    if (mql.addEventListener) {
+      mql.addEventListener("change", handleChange);
+    } else if (mql.addListener) {
+      mql.addListener(handleChange);
+    }
+    return () => {
+      if (mql.removeEventListener) {
+        mql.removeEventListener("change", handleChange);
+      } else if (mql.removeListener) {
+        mql.removeListener(handleChange);
       }
-    } catch {}
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      document.documentElement.classList.toggle("dark", isDark);
+    }
   }, [isDark]);
 
   // Devices state
