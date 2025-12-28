@@ -271,6 +271,14 @@ const BATTERY_PRESETS = [
   },
 ];
 
+const POWER_SOURCES = [
+  { id: "v-mount", label: "V-Mount Plate", maxA: 12 },
+  { id: "gold-mount", label: "Gold Mount Plate", maxA: 12 },
+  { id: "3-pin-xlr", label: "3-pin XLR", maxA: 10 },
+  { id: "2-pin-lemo", label: "2-pin Lemo", maxA: 5 },
+  { id: "block-battery", label: "Block Battery", maxA: 20 },
+];
+
 // ---- Helpers
 function uid() {
   return Math.random().toString(36).slice(2, 9);
@@ -467,6 +475,7 @@ export default function PowerVibe() {
   const [batteryAh, setBatteryAh] = useState("");
   const [batteryPreset, setBatteryPreset] = useState("");
   const [deratePct, setDeratePct] = useState("10");
+  const [powerSource, setPowerSource] = useState(POWER_SOURCES[0]?.id ?? "");
 
   // iOS-friendly picker state
   const isIOS =
@@ -505,6 +514,10 @@ export default function PowerVibe() {
     return "";
   }, [totalCurrentA]);
   const loadTone = totalCurrentA > 12 ? "danger" : totalCurrentA > 10 ? "warn" : "ok";
+  const selectedPowerSource = useMemo(
+    () => POWER_SOURCES.find((source) => source.id === powerSource),
+    [powerSource]
+  );
 
   // Actions
   function addDevice(name, watts) {
@@ -812,6 +825,22 @@ export default function PowerVibe() {
                   step={0.1}
                 />
               </div>
+              <div className="col-span-12">
+                <label className="block text-sm mb-1">Power source</label>
+                <div className={selectWrap}>
+                  <select
+                    className={selectClass}
+                    value={powerSource}
+                    onChange={(e) => setPowerSource(e.target.value)}
+                  >
+                    {POWER_SOURCES.map((source) => (
+                      <option key={source.id} value={source.id}>
+                        {source.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
               <p className="col-span-12 text-xs text-neutral-500 dark:text-neutral-400">
                 Select a preset to auto-fill values, or choose <em>Custom</em> and enter Wh
                 or V+Ah manually.
@@ -846,6 +875,17 @@ export default function PowerVibe() {
               <Badge tone="neutral">{totalWatts.toFixed(1)} W total</Badge>
               <span>
                 ≈ {totalCurrentA.toFixed(2)} A @ {(systemV ?? 14.4).toFixed(1)} V
+              </span>
+            </div>
+            <div className="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+              Source:{" "}
+              <span className="font-medium">
+                {selectedPowerSource?.label}
+              </span>
+              {" · "}
+              Limit:{" "}
+              <span className="font-medium">
+                {selectedPowerSource?.maxA}A
               </span>
             </div>
             {warning && (
