@@ -65,6 +65,100 @@ const PRESETS = {
     { name: "Teradek Bolt 3000 TX", watts: 20, brand: "Teradek" },
     { name: "Teradek Bolt 3000 RX", watts: 25, brand: "Teradek" },
 
+    // Kits / Bundles (Typical draw)
+    {
+      name: "Preston Kit (MDR-2 + 1 Motor) – typical",
+      watts: 11,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-2 + 2 Motors) – typical",
+      watts: 15,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-2 + 3 Motors) – typical",
+      watts: 19,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-2 + 3 Motors + Light Ranger 2) – typical",
+      watts: 22.5,
+      brand: "Preston",
+    },
+    {
+      name: "Preston Kit (MDR-3 + 1 Motor) – typical",
+      watts: 11,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-3 + 2 Motors) – typical",
+      watts: 15,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-3 + 3 Motors) – typical",
+      watts: 19,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-3 + 3 Motors + Light Ranger 2) – typical",
+      watts: 22.5,
+      brand: "Preston",
+    },
+    {
+      name: "Preston Kit (MDR-4 + 1 Motor) – typical",
+      watts: 12,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-4 + 2 Motors) – typical",
+      watts: 16,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-4 + 3 Motors) – typical",
+      watts: 20,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-4 + 3 Motors + Light Ranger 2) – typical",
+      watts: 23.5,
+      brand: "Preston",
+    },
+    {
+      name: "Preston Kit (MDR-5 + 1 Motor) – typical",
+      watts: 13,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-5 + 2 Motors) – typical",
+      watts: 17,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-5 + 3 Motors) – typical",
+      watts: 21,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-5 + 3 Motors + Light Ranger 2) – typical",
+      watts: 24.5,
+      brand: "Preston",
+    },
+
     // Lens control / motors & ARRI ecosystem
     { name: "Preston MDR-2", watts: 6, brand: "Preston" },
     { name: "Preston MDR-3", watts: 6, brand: "Preston" },
@@ -271,6 +365,15 @@ const BATTERY_PRESETS = [
   },
 ];
 
+const POWER_SOURCES = [
+  { id: "v-mount", label: "V-Mount Plate", maxA: 12 },
+  { id: "gold-mount", label: "Gold Mount Plate", maxA: 12 },
+  { id: "3-pin-xlr", label: "3-pin XLR", maxA: 10 },
+  { id: "2-pin-lemo", label: "2-pin Lemo", maxA: 5 },
+  { id: "block-battery", label: "Block Battery", maxA: 20 },
+  { id: "psu", label: "PSU / Mains", maxA: 30 },
+];
+
 // ---- Helpers
 function uid() {
   return Math.random().toString(36).slice(2, 9);
@@ -296,13 +399,23 @@ function runtimeHours(wh, totalWatts, derate = 0.1) {
   const usableWh = wh * (1 - derate);
   return usableWh / totalWatts;
 }
-function connectorNote(currentA) {
-  if (currentA > 12)
-    return "❗ Over 12A: use RS/Fischer or block distro; check plate rating.";
-  if (currentA > 10)
-    return "⚠️ 10–12A: near plate limit; verify rating & cable gauge.";
-  if (currentA > 6) return "OK: use quality 2-pin LEMO / D-Tap; mind cable length.";
-  return "OK: typical D-Tap/2-pin range.";
+function connectorNote(currentA, sourceId) {
+  const src = POWER_SOURCES.find((source) => source.id === sourceId) ?? POWER_SOURCES[0];
+  const limit = src.maxA;
+
+  if (sourceId === "psu") {
+    return "PSU / mains: ensure the PSU is rated comfortably above your peak load. Runtime is not battery-limited.";
+  }
+  if (currentA > limit) {
+    return `❗ Over the typical limit for this source (${limit}A). Split loads or move accessories to a distro/block.`;
+  }
+  if (currentA > limit * 0.8) {
+    return `⚠️ Close to the limit (~${limit}A). Verify plate/distro and cable ratings.`;
+  }
+  if (currentA > 6) {
+    return "OK: use quality 2-pin / D-Tap / RS outputs and keep cable runs sensible.";
+  }
+  return "OK: well within typical on-board connector limits.";
 }
 function toneClasses(tone = "neutral") {
   switch (tone) {
@@ -467,6 +580,7 @@ export default function PowerVibe() {
   const [batteryAh, setBatteryAh] = useState("");
   const [batteryPreset, setBatteryPreset] = useState("");
   const [deratePct, setDeratePct] = useState("10");
+  const [powerSource, setPowerSource] = useState(POWER_SOURCES[0]?.id ?? "");
 
   // iOS-friendly picker state
   const isIOS =
@@ -497,14 +611,30 @@ export default function PowerVibe() {
     const derate = Math.min(Math.max(parseNum(deratePct) ?? 10, 0), 50) / 100;
     return runtimeHours(computedWh, totalWatts, derate);
   }, [computedWh, totalWatts, deratePct]);
+  const powerSourceObj = useMemo(
+    () => POWER_SOURCES.find((source) => source.id === powerSource) ?? POWER_SOURCES[0],
+    [powerSource]
+  );
   const warning = useMemo(() => {
-    if (totalCurrentA > 12)
-      return "❗ Exceeds 12A — likely unsafe on most plates. Split loads or use 26V/Block.";
-    if (totalCurrentA > 10)
-      return "⚠️ Approaching/over 10A — verify plate & cable ratings.";
+    if (powerSourceObj.id === "psu") return "";
+    const limit = powerSourceObj.maxA;
+
+    if (totalCurrentA > limit) {
+      return `❗ Exceeds typical limit (${limit}A) for selected source. Split loads or use a higher-rated distro/block.`;
+    }
+    if (totalCurrentA > limit * 0.8) {
+      return `⚠️ Near the limit (~${limit}A). Verify plate/distro and cable ratings.`;
+    }
     return "";
-  }, [totalCurrentA]);
-  const loadTone = totalCurrentA > 12 ? "danger" : totalCurrentA > 10 ? "warn" : "ok";
+  }, [totalCurrentA, powerSourceObj]);
+  const loadTone =
+    powerSourceObj.id === "psu"
+      ? "ok"
+      : totalCurrentA > powerSourceObj.maxA
+        ? "danger"
+        : totalCurrentA > powerSourceObj.maxA * 0.8
+          ? "warn"
+          : "ok";
 
   // Actions
   function addDevice(name, watts) {
@@ -645,6 +775,10 @@ export default function PowerVibe() {
                 Full list
               </button>
             </div>
+            <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+              Tip: Kit presets are typical averages. Adding MDR + motors individually can
+              represent worst-case draw.
+            </p>
           </div>
         </div>
 
@@ -812,6 +946,22 @@ export default function PowerVibe() {
                   step={0.1}
                 />
               </div>
+              <div className="col-span-12">
+                <label className="block text-sm mb-1">Power source</label>
+                <div className={selectWrap}>
+                  <select
+                    className={selectClass}
+                    value={powerSource}
+                    onChange={(e) => setPowerSource(e.target.value)}
+                  >
+                    {POWER_SOURCES.map((source) => (
+                      <option key={source.id} value={source.id}>
+                        {source.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
               <p className="col-span-12 text-xs text-neutral-500 dark:text-neutral-400">
                 Select a preset to auto-fill values, or choose <em>Custom</em> and enter Wh
                 or V+Ah manually.
@@ -841,11 +991,31 @@ export default function PowerVibe() {
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className={`rounded-2xl shadow-sm border p-4 ${toneClasses(loadTone)}`}>
             <h3 className="font-semibold mb-2">Total Load</h3>
-            <AmpGauge value={totalCurrentA} max={12} />
+            <AmpGauge value={totalCurrentA} max={powerSourceObj.maxA} />
             <div className="mt-3 text-sm text-neutral-700 dark:text-neutral-300 flex items-center gap-2 flex-wrap">
               <Badge tone="neutral">{totalWatts.toFixed(1)} W total</Badge>
               <span>
                 ≈ {totalCurrentA.toFixed(2)} A @ {(systemV ?? 14.4).toFixed(1)} V
+              </span>
+            </div>
+            <div className="mt-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 bg-neutral-100 dark:bg-neutral-800 text-xs text-neutral-700 dark:text-neutral-300">
+              <span className="font-medium">Source:</span>
+              <span>{powerSourceObj.label}</span>
+              {powerSourceObj.id === "psu" ? (
+                <span className="text-neutral-500 dark:text-neutral-400">
+                  · PSU mode (no battery runtime limit)
+                </span>
+              ) : (
+                <span className="text-neutral-500 dark:text-neutral-400">
+                  · Limit: <span className="font-medium">{powerSourceObj.maxA}A</span>
+                </span>
+              )}
+              <span
+                title="This setting changes the typical safe current limit and connector guidance. Plates often have lower limits than block batteries."
+                className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full border border-neutral-300 dark:border-neutral-600 text-[11px] text-neutral-600 dark:text-neutral-300"
+                aria-label="Power source info"
+              >
+                i
               </span>
             </div>
             {warning && (
@@ -865,7 +1035,7 @@ export default function PowerVibe() {
 
           <div className="rounded-2xl shadow-sm border p-4 bg-gradient-to-br from-neutral-50 to-zinc-50 border-neutral-200 dark:from-neutral-900/30 dark:to-zinc-900/20 dark:border-neutral-800">
             <h3 className="font-semibold mb-2">Connector Guidance</h3>
-            <div className="text-sm">{connectorNote(totalCurrentA)}</div>
+            <div className="text-sm">{connectorNote(totalCurrentA, powerSource)}</div>
             <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
               Always verify plate/cable ratings for your specific hardware.
             </p>
