@@ -159,6 +159,176 @@ const PRESETS = {
       brand: "Preston",
     },
 
+    // ARRI ECS Kits (Typical draw) — with RIA-1
+    {
+      name: "ARRI ECS Kit (RIA-1 + 1× cforce Mini) – typical",
+      watts: 14,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + 2× cforce Mini) – typical",
+      watts: 19,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + 3× cforce Mini) – typical",
+      watts: 24,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + Mini + RF) – typical",
+      watts: 21,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + 2× Mini + RF) – typical",
+      watts: 26,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + 1× cforce Plus) – typical",
+      watts: 26,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + Plus + Mini) – typical",
+      watts: 32,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + Plus + 2× Mini) – typical",
+      watts: 39,
+      brand: "ARRI",
+    },
+
+    // ARRI ECS Kits (Typical draw) — direct LBUS from camera (no RIA-1)
+    {
+      name: "ARRI ECS Kit (Direct LBUS + 1× cforce Mini) – typical",
+      watts: 10,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + 2× cforce Mini) – typical",
+      watts: 15,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + 3× cforce Mini) – typical",
+      watts: 20,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + Mini + RF) – typical",
+      watts: 17,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + 2× Mini + RF) – typical",
+      watts: 22,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + 1× cforce Plus) – typical",
+      watts: 22,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + Plus + Mini) – typical",
+      watts: 28,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + Plus + 2× Mini) – typical",
+      watts: 35,
+      brand: "ARRI",
+    },
+
+    // ARRI ECS Kits (Typical draw) — UMC-4 based
+    {
+      name: "ARRI ECS Kit (UMC-4 + 1× cforce Mini) – typical",
+      watts: 15,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (UMC-4 + 2× cforce Mini) – typical",
+      watts: 20,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (UMC-4 + 3× cforce Mini) – typical",
+      watts: 25,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (UMC-4 + Mini + RF) – typical",
+      watts: 22,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (UMC-4 + 2× Mini + RF) – typical",
+      watts: 27,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (UMC-4 + 1× cforce Plus) – typical",
+      watts: 27,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (UMC-4 + Plus + Mini) – typical",
+      watts: 33,
+      brand: "ARRI",
+    },
+
+    // ARRI ECS Kits (Typical draw) — AMC-1 based
+    {
+      name: "ARRI ECS Kit (AMC-1 + 1× cforce Mini) – typical",
+      watts: 14,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (AMC-1 + 2× cforce Mini) – typical",
+      watts: 19,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (AMC-1 + 3× cforce Mini) – typical",
+      watts: 24,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (AMC-1 + Mini + RF) – typical",
+      watts: 21,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (AMC-1 + 2× Mini + RF) – typical",
+      watts: 26,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (AMC-1 + 1× cforce Plus) – typical",
+      watts: 26,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (AMC-1 + Plus + Mini) – typical",
+      watts: 32,
+      brand: "ARRI",
+    },
+
     // Lens control / motors & ARRI ecosystem
     { name: "Preston MDR-2", watts: 6, brand: "Preston" },
     { name: "Preston MDR-3", watts: 6, brand: "Preston" },
@@ -776,8 +946,8 @@ export default function PowerVibe() {
               </button>
             </div>
             <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
-              Tip: Kit presets are typical averages. Adding MDR + motors individually can
-              represent worst-case draw.
+              Tip: Kit presets represent typical draw. Adding MDR/UMC + motors
+              individually is closer to worst-case peaks.
             </p>
           </div>
         </div>
