@@ -65,6 +65,100 @@ const PRESETS = {
     { name: "Teradek Bolt 3000 TX", watts: 20, brand: "Teradek" },
     { name: "Teradek Bolt 3000 RX", watts: 25, brand: "Teradek" },
 
+    // Kits / Bundles (Typical draw)
+    {
+      name: "Preston Kit (MDR-2 + 1 Motor) – typical",
+      watts: 11,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-2 + 2 Motors) – typical",
+      watts: 15,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-2 + 3 Motors) – typical",
+      watts: 19,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-2 + 3 Motors + Light Ranger 2) – typical",
+      watts: 22.5,
+      brand: "Preston",
+    },
+    {
+      name: "Preston Kit (MDR-3 + 1 Motor) – typical",
+      watts: 11,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-3 + 2 Motors) – typical",
+      watts: 15,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-3 + 3 Motors) – typical",
+      watts: 19,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-3 + 3 Motors + Light Ranger 2) – typical",
+      watts: 22.5,
+      brand: "Preston",
+    },
+    {
+      name: "Preston Kit (MDR-4 + 1 Motor) – typical",
+      watts: 12,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-4 + 2 Motors) – typical",
+      watts: 16,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-4 + 3 Motors) – typical",
+      watts: 20,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-4 + 3 Motors + Light Ranger 2) – typical",
+      watts: 23.5,
+      brand: "Preston",
+    },
+    {
+      name: "Preston Kit (MDR-5 + 1 Motor) – typical",
+      watts: 13,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-5 + 2 Motors) – typical",
+      watts: 17,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-5 + 3 Motors) – typical",
+      watts: 21,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-5 + 3 Motors + Light Ranger 2) – typical",
+      watts: 24.5,
+      brand: "Preston",
+    },
+
     // Lens control / motors & ARRI ecosystem
     { name: "Preston MDR-2", watts: 6, brand: "Preston" },
     { name: "Preston MDR-3", watts: 6, brand: "Preston" },
@@ -681,6 +775,10 @@ export default function PowerVibe() {
                 Full list
               </button>
             </div>
+            <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+              Tip: Kit presets are typical averages. Adding MDR + motors individually can
+              represent worst-case draw.
+            </p>
           </div>
         </div>
 
