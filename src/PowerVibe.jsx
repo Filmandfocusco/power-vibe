@@ -1285,8 +1285,8 @@ export default function PowerVibe() {
           (1 − derate).
         </p>
         <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
-          Thanks to a rental-house technician for sharing a power reference document that
-          helped refine camera load modes and limits.
+          Thanks to everyone who has shared knowledge, feedback, and real-world experience
+          to help shape Power Vibe.
         </p>
 
         {/* iOS-friendly full list modal for Cameras */}
