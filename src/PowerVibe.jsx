@@ -987,7 +987,13 @@ export default function PowerVibe() {
             return (
               <div
                 key={d.id}
-                className="grid grid-cols-12 items-center gap-3 px-4 py-3 border-t dark:border-neutral-800"
+                className={`grid grid-cols-12 items-center gap-3 px-4 py-3 border-t dark:border-neutral-800 ${
+                  d.kind === "camera"
+                    ? loadMode === "strained"
+                      ? "bg-amber-50/70 dark:bg-amber-900/20"
+                      : "bg-emerald-50/50 dark:bg-emerald-900/15"
+                    : ""
+                }`}
               >
                 <input
                   value={d.name}
@@ -1214,7 +1220,15 @@ export default function PowerVibe() {
         {/* Summary cards */}
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className={`rounded-2xl shadow-sm border p-4 ${toneClasses(loadTone)}`}>
-            <h3 className="font-semibold mb-2">Total Load</h3>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-semibold">Total Load</h3>
+              <span className="text-xs px-2 py-1 rounded-lg border bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700">
+                Mode:{" "}
+                <span className="font-medium">
+                  {loadMode === "strained" ? "Strained" : "Standby"}
+                </span>
+              </span>
+            </div>
             <AmpGauge value={totalCurrentA} max={powerSourceObj.maxA} />
             <div className="mt-3 text-sm text-neutral-700 dark:text-neutral-300 flex items-center gap-2 flex-wrap">
               <Badge tone="neutral">{totalWatts.toFixed(1)} W total</Badge>
