@@ -12,16 +12,16 @@ import React, { useEffect, useMemo, useState } from "react";
 // ---- Device presets (cameras & accessories)
 const PRESETS = {
   cameras: [
-    { name: "ARRI Alexa 35", watts: 90 },
-    { name: "ARRI Alexa Mini LF", watts: 85 },
-    { name: "ARRI Alexa Mini", watts: 80 },
-    { name: "Sony Venice 2", watts: 65 },
-    { name: "Sony FX9", watts: 55 },
-    { name: "Canon C500 MkII", watts: 45 },
-    { name: "RED Komodo", watts: 35 },
-    { name: "RED V-Raptor", watts: 80 },
-    { name: "Blackmagic URSA Mini Pro 12K", watts: 90 },
-    { name: "Panasonic Varicam LT", watts: 65 },
+    { name: "ARRI Alexa 35", watts_standby: 85, watts_strained: 135 },
+    { name: "ARRI Alexa Mini LF", watts_standby: 85, watts_strained: 85 },
+    { name: "ARRI Alexa Mini", watts_standby: 80, watts_strained: 80 },
+    { name: "Sony Venice 2", watts_standby: 65, watts_strained: 65 },
+    { name: "Sony FX9", watts_standby: 55, watts_strained: 55 },
+    { name: "Canon C500 MkII", watts_standby: 45, watts_strained: 45 },
+    { name: "RED Komodo", watts_standby: 35, watts_strained: 35 },
+    { name: "RED V-Raptor", watts_standby: 80, watts_strained: 80 },
+    { name: "Blackmagic URSA Mini Pro 12K", watts_standby: 90, watts_strained: 90 },
+    { name: "Panasonic Varicam LT", watts_standby: 65, watts_strained: 65 },
   ],
   accessories: [
     // Monitoring
@@ -553,7 +553,15 @@ function parseNum(v) {
   const n = typeof v === "number" ? v : parseFloat(v);
   return Number.isFinite(n) ? n : undefined;
 }
-function devicePowerW(d) {
+function devicePowerW(d, loadMode = "standby") {
+  if (d && (d.watts_standby !== undefined || d.watts_strained !== undefined)) {
+    const ws = parseNum(d.watts_standby);
+    const wq = parseNum(d.watts_strained);
+    const picked = loadMode === "strained" ? wq : ws;
+    if (picked !== undefined && picked > 0) return picked;
+    const fallback = ws ?? wq;
+    if (fallback !== undefined && fallback > 0) return fallback;
+  }
   const W = parseNum(d.watts);
   if (W !== undefined && W > 0) return W;
   const V = parseNum(d.volts);
@@ -751,6 +759,7 @@ export default function PowerVibe() {
   const [batteryPreset, setBatteryPreset] = useState("");
   const [deratePct, setDeratePct] = useState("10");
   const [powerSource, setPowerSource] = useState(POWER_SOURCES[0]?.id ?? "");
+  const [loadMode, setLoadMode] = useState("standby");
 
   // iOS-friendly picker state
   const isIOS =
@@ -761,8 +770,8 @@ export default function PowerVibe() {
 
   // Computations
   const totalWatts = useMemo(
-    () => devices.reduce((sum, d) => sum + (devicePowerW(d) ?? 0), 0),
-    [devices]
+    () => devices.reduce((sum, d) => sum + (devicePowerW(d, loadMode) ?? 0), 0),
+    [devices, loadMode]
   );
   const systemV = useMemo(() => parseNum(batteryV) ?? 14.4, [batteryV]);
   const totalCurrentA = useMemo(
@@ -809,6 +818,18 @@ export default function PowerVibe() {
   // Actions
   function addDevice(name, watts) {
     setDevices((prev) => [...prev, { id: uid(), name, watts }]);
+  }
+  function addCamera(preset) {
+    setDevices((prev) => [
+      ...prev,
+      {
+        id: uid(),
+        name: preset.name,
+        watts_standby: preset.watts_standby,
+        watts_strained: preset.watts_strained,
+        kind: "camera",
+      },
+    ]);
   }
 
   // Shared input/select classes
@@ -891,7 +912,7 @@ export default function PowerVibe() {
                     const val = e.target.value;
                     if (val) {
                       const preset = PRESETS.cameras.find((c) => c.name === val);
-                      if (preset) addDevice(preset.name, preset.watts);
+                      if (preset) addCamera(preset);
                       e.currentTarget.selectedIndex = 0;
                     }
                   }}
@@ -899,7 +920,7 @@ export default function PowerVibe() {
                 >
                   <option value="">Select camera…</option>
                   {PRESETS.cameras.map((c) => (
-                    <option key={c.name} value={c.name}>{`${c.name} (${c.watts}W)`}</option>
+                    <option key={c.name} value={c.name}>{`${c.name} (${c.watts_standby}W)`}</option>
                   ))}
                 </select>
               </div>
@@ -1154,6 +1175,37 @@ export default function PowerVibe() {
             <p className="text-xs text-neutral-500 dark:text-neutral-400">
               Accounts for cold weather, aging, sag & reserve. Typical: 10–50%.
             </p>
+            <div className="mt-3">
+              <label className="block text-sm mb-1">Camera load mode</label>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setLoadMode("standby")}
+                  className={`px-3 py-2 rounded-xl border text-sm ${
+                    loadMode === "standby"
+                      ? "bg-black text-white dark:bg-white dark:text-black"
+                      : "hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  }`}
+                >
+                  Standby / Typical
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLoadMode("strained")}
+                  className={`px-3 py-2 rounded-xl border text-sm ${
+                    loadMode === "strained"
+                      ? "bg-black text-white dark:bg-white dark:text-black"
+                      : "hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  }`}
+                >
+                  Strained / Worst-case
+                </button>
+              </div>
+              <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                Adjusts camera body draw using standby vs strained values (e.g. high FPS /
+                heavy processing).
+              </p>
+            </div>
           </div>
         </div>
 
@@ -1216,6 +1268,10 @@ export default function PowerVibe() {
           Formulas: P = V × I; Total P = ΣPᵢ; Runtime (h) = UsableWh ÷ TotalW; UsableWh = Wh ×
           (1 − derate).
         </p>
+        <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+          Thanks to a rental-house technician for sharing a power reference document that
+          helped refine camera load modes and limits.
+        </p>
 
         {/* iOS-friendly full list modal for Cameras */}
         {showCamList && (
@@ -1243,13 +1299,13 @@ export default function PowerVibe() {
                     key={c.name}
                     className="w-full text-left px-3 py-2 rounded-xl border dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800"
                     onClick={() => {
-                      addDevice(c.name, c.watts);
+                      addCamera(c);
                       setShowCamList(false);
                     }}
                   >
                     {c.name}{" "}
                     <span className="text-neutral-500 dark:text-neutral-400">
-                      ({c.watts}W)
+                      ({c.watts_standby}W)
                     </span>
                   </button>
                 ))}
