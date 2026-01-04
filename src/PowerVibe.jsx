@@ -920,7 +920,9 @@ export default function PowerVibe() {
                 >
                   <option value="">Select camera…</option>
                   {PRESETS.cameras.map((c) => (
-                    <option key={c.name} value={c.name}>{`${c.name} (${c.watts_standby}W)`}</option>
+                    <option key={c.name} value={c.name}>
+                      {c.name} ({c.watts_standby}–{c.watts_strained}W)
+                    </option>
                   ))}
                 </select>
               </div>
