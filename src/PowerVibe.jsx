@@ -12,16 +12,16 @@ import React, { useEffect, useMemo, useState } from "react";
 // ---- Device presets (cameras & accessories)
 const PRESETS = {
   cameras: [
-    { name: "ARRI Alexa 35", watts: 90 },
-    { name: "ARRI Alexa Mini LF", watts: 85 },
-    { name: "ARRI Alexa Mini", watts: 80 },
-    { name: "Sony Venice 2", watts: 65 },
-    { name: "Sony FX9", watts: 55 },
-    { name: "Canon C500 MkII", watts: 45 },
-    { name: "RED Komodo", watts: 35 },
-    { name: "RED V-Raptor", watts: 80 },
-    { name: "Blackmagic URSA Mini Pro 12K", watts: 90 },
-    { name: "Panasonic Varicam LT", watts: 65 },
+    { name: "ARRI Alexa 35", watts_standby: 85, watts_strained: 135 },
+    { name: "ARRI Alexa Mini LF", watts_standby: 85, watts_strained: 95 },
+    { name: "ARRI Alexa Mini", watts_standby: 80, watts_strained: 90 },
+    { name: "Sony Venice 2", watts_standby: 65, watts_strained: 85 },
+    { name: "Sony FX9", watts_standby: 55, watts_strained: 65 },
+    { name: "Canon C500 MkII", watts_standby: 45, watts_strained: 60 },
+    { name: "RED Komodo", watts_standby: 35, watts_strained: 45 },
+    { name: "RED V-Raptor", watts_standby: 80, watts_strained: 95 },
+    { name: "Blackmagic URSA Mini Pro 12K", watts_standby: 90, watts_strained: 120 },
+    { name: "Panasonic Varicam LT", watts_standby: 65, watts_strained: 80 },
   ],
   accessories: [
     // Monitoring
@@ -64,6 +64,270 @@ const PRESETS = {
     { name: "Teradek Bolt 4K 1500 RX", watts: 22, brand: "Teradek" },
     { name: "Teradek Bolt 3000 TX", watts: 20, brand: "Teradek" },
     { name: "Teradek Bolt 3000 RX", watts: 25, brand: "Teradek" },
+
+    // Kits / Bundles (Typical draw)
+    {
+      name: "Preston Kit (MDR-2 + 1 Motor) – typical",
+      watts: 11,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-2 + 2 Motors) – typical",
+      watts: 15,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-2 + 3 Motors) – typical",
+      watts: 19,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-2 + 3 Motors + Light Ranger 2) – typical",
+      watts: 22.5,
+      brand: "Preston",
+    },
+    {
+      name: "Preston Kit (MDR-3 + 1 Motor) – typical",
+      watts: 11,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-3 + 2 Motors) – typical",
+      watts: 15,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-3 + 3 Motors) – typical",
+      watts: 19,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-3 + 3 Motors + Light Ranger 2) – typical",
+      watts: 22.5,
+      brand: "Preston",
+    },
+    {
+      name: "Preston Kit (MDR-4 + 1 Motor) – typical",
+      watts: 12,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-4 + 2 Motors) – typical",
+      watts: 16,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-4 + 3 Motors) – typical",
+      watts: 20,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-4 + 3 Motors + Light Ranger 2) – typical",
+      watts: 23.5,
+      brand: "Preston",
+    },
+    {
+      name: "Preston Kit (MDR-5 + 1 Motor) – typical",
+      watts: 13,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-5 + 2 Motors) – typical",
+      watts: 17,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-5 + 3 Motors) – typical",
+      watts: 21,
+      brand: "Preston",
+      common: true,
+    },
+    {
+      name: "Preston Kit (MDR-5 + 3 Motors + Light Ranger 2) – typical",
+      watts: 24.5,
+      brand: "Preston",
+    },
+
+    // ARRI ECS Kits (Typical draw) — with RIA-1
+    {
+      name: "ARRI ECS Kit (RIA-1 + 1× cforce Mini) – typical",
+      watts: 14,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + 2× cforce Mini) – typical",
+      watts: 19,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + 3× cforce Mini) – typical",
+      watts: 24,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + Mini + RF) – typical",
+      watts: 21,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + 2× Mini + RF) – typical",
+      watts: 26,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + 1× cforce Plus) – typical",
+      watts: 26,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + Plus + Mini) – typical",
+      watts: 32,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (RIA-1 + Plus + 2× Mini) – typical",
+      watts: 39,
+      brand: "ARRI",
+    },
+
+    // ARRI ECS Kits (Typical draw) — direct LBUS from camera (no RIA-1)
+    {
+      name: "ARRI ECS Kit (Direct LBUS + 1× cforce Mini) – typical",
+      watts: 10,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + 2× cforce Mini) – typical",
+      watts: 15,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + 3× cforce Mini) – typical",
+      watts: 20,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + Mini + RF) – typical",
+      watts: 17,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + 2× Mini + RF) – typical",
+      watts: 22,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + 1× cforce Plus) – typical",
+      watts: 22,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + Plus + Mini) – typical",
+      watts: 28,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (Direct LBUS + Plus + 2× Mini) – typical",
+      watts: 35,
+      brand: "ARRI",
+    },
+
+    // ARRI ECS Kits (Typical draw) — UMC-4 based
+    {
+      name: "ARRI ECS Kit (UMC-4 + 1× cforce Mini) – typical",
+      watts: 15,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (UMC-4 + 2× cforce Mini) – typical",
+      watts: 20,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (UMC-4 + 3× cforce Mini) – typical",
+      watts: 25,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (UMC-4 + Mini + RF) – typical",
+      watts: 22,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (UMC-4 + 2× Mini + RF) – typical",
+      watts: 27,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (UMC-4 + 1× cforce Plus) – typical",
+      watts: 27,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (UMC-4 + Plus + Mini) – typical",
+      watts: 33,
+      brand: "ARRI",
+    },
+
+    // ARRI ECS Kits (Typical draw) — AMC-1 based
+    {
+      name: "ARRI ECS Kit (AMC-1 + 1× cforce Mini) – typical",
+      watts: 14,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (AMC-1 + 2× cforce Mini) – typical",
+      watts: 19,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (AMC-1 + 3× cforce Mini) – typical",
+      watts: 24,
+      brand: "ARRI",
+      common: true,
+    },
+    {
+      name: "ARRI ECS Kit (AMC-1 + Mini + RF) – typical",
+      watts: 21,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (AMC-1 + 2× Mini + RF) – typical",
+      watts: 26,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (AMC-1 + 1× cforce Plus) – typical",
+      watts: 26,
+      brand: "ARRI",
+    },
+    {
+      name: "ARRI ECS Kit (AMC-1 + Plus + Mini) – typical",
+      watts: 32,
+      brand: "ARRI",
+    },
 
     // Lens control / motors & ARRI ecosystem
     { name: "Preston MDR-2", watts: 6, brand: "Preston" },
@@ -271,6 +535,15 @@ const BATTERY_PRESETS = [
   },
 ];
 
+const POWER_SOURCES = [
+  { id: "v-mount", label: "V-Mount Plate", maxA: 12 },
+  { id: "gold-mount", label: "Gold Mount Plate", maxA: 12 },
+  { id: "3-pin-xlr", label: "3-pin XLR", maxA: 10 },
+  { id: "2-pin-lemo", label: "2-pin Lemo", maxA: 5 },
+  { id: "block-battery", label: "Block Battery", maxA: 20 },
+  { id: "psu", label: "PSU / Mains", maxA: 30 },
+];
+
 // ---- Helpers
 function uid() {
   return Math.random().toString(36).slice(2, 9);
@@ -280,7 +553,15 @@ function parseNum(v) {
   const n = typeof v === "number" ? v : parseFloat(v);
   return Number.isFinite(n) ? n : undefined;
 }
-function devicePowerW(d) {
+function devicePowerW(d, loadMode = "standby") {
+  if (d && (d.watts_standby !== undefined || d.watts_strained !== undefined)) {
+    const ws = parseNum(d.watts_standby);
+    const wq = parseNum(d.watts_strained);
+    const picked = loadMode === "strained" ? wq : ws;
+    if (picked !== undefined && picked > 0) return picked;
+    const fallback = ws ?? wq;
+    if (fallback !== undefined && fallback > 0) return fallback;
+  }
   const W = parseNum(d.watts);
   if (W !== undefined && W > 0) return W;
   const V = parseNum(d.volts);
@@ -296,13 +577,23 @@ function runtimeHours(wh, totalWatts, derate = 0.1) {
   const usableWh = wh * (1 - derate);
   return usableWh / totalWatts;
 }
-function connectorNote(currentA) {
-  if (currentA > 12)
-    return "❗ Over 12A: use RS/Fischer or block distro; check plate rating.";
-  if (currentA > 10)
-    return "⚠️ 10–12A: near plate limit; verify rating & cable gauge.";
-  if (currentA > 6) return "OK: use quality 2-pin LEMO / D-Tap; mind cable length.";
-  return "OK: typical D-Tap/2-pin range.";
+function connectorNote(currentA, sourceId) {
+  const src = POWER_SOURCES.find((source) => source.id === sourceId) ?? POWER_SOURCES[0];
+  const limit = src.maxA;
+
+  if (sourceId === "psu") {
+    return "PSU / mains: ensure the PSU is rated comfortably above your peak load. Runtime is not battery-limited.";
+  }
+  if (currentA > limit) {
+    return `❗ Over the typical limit for this source (${limit}A). Split loads or move accessories to a distro/block.`;
+  }
+  if (currentA > limit * 0.8) {
+    return `⚠️ Close to the limit (~${limit}A). Verify plate/distro and cable ratings.`;
+  }
+  if (currentA > 6) {
+    return "OK: use quality 2-pin / D-Tap / RS outputs and keep cable runs sensible.";
+  }
+  return "OK: well within typical on-board connector limits.";
 }
 function toneClasses(tone = "neutral") {
   switch (tone) {
@@ -467,6 +758,8 @@ export default function PowerVibe() {
   const [batteryAh, setBatteryAh] = useState("");
   const [batteryPreset, setBatteryPreset] = useState("");
   const [deratePct, setDeratePct] = useState("10");
+  const [powerSource, setPowerSource] = useState(POWER_SOURCES[0]?.id ?? "");
+  const [loadMode, setLoadMode] = useState("standby");
 
   // iOS-friendly picker state
   const isIOS =
@@ -477,8 +770,8 @@ export default function PowerVibe() {
 
   // Computations
   const totalWatts = useMemo(
-    () => devices.reduce((sum, d) => sum + (devicePowerW(d) ?? 0), 0),
-    [devices]
+    () => devices.reduce((sum, d) => sum + (devicePowerW(d, loadMode) ?? 0), 0),
+    [devices, loadMode]
   );
   const systemV = useMemo(() => parseNum(batteryV) ?? 14.4, [batteryV]);
   const totalCurrentA = useMemo(
@@ -497,18 +790,46 @@ export default function PowerVibe() {
     const derate = Math.min(Math.max(parseNum(deratePct) ?? 10, 0), 50) / 100;
     return runtimeHours(computedWh, totalWatts, derate);
   }, [computedWh, totalWatts, deratePct]);
+  const powerSourceObj = useMemo(
+    () => POWER_SOURCES.find((source) => source.id === powerSource) ?? POWER_SOURCES[0],
+    [powerSource]
+  );
   const warning = useMemo(() => {
-    if (totalCurrentA > 12)
-      return "❗ Exceeds 12A — likely unsafe on most plates. Split loads or use 26V/Block.";
-    if (totalCurrentA > 10)
-      return "⚠️ Approaching/over 10A — verify plate & cable ratings.";
+    if (powerSourceObj.id === "psu") return "";
+    const limit = powerSourceObj.maxA;
+
+    if (totalCurrentA > limit) {
+      return `❗ Exceeds typical limit (${limit}A) for selected source. Split loads or use a higher-rated distro/block.`;
+    }
+    if (totalCurrentA > limit * 0.8) {
+      return `⚠️ Near the limit (~${limit}A). Verify plate/distro and cable ratings.`;
+    }
     return "";
-  }, [totalCurrentA]);
-  const loadTone = totalCurrentA > 12 ? "danger" : totalCurrentA > 10 ? "warn" : "ok";
+  }, [totalCurrentA, powerSourceObj]);
+  const loadTone =
+    powerSourceObj.id === "psu"
+      ? "ok"
+      : totalCurrentA > powerSourceObj.maxA
+        ? "danger"
+        : totalCurrentA > powerSourceObj.maxA * 0.8
+          ? "warn"
+          : "ok";
 
   // Actions
   function addDevice(name, watts) {
     setDevices((prev) => [...prev, { id: uid(), name, watts }]);
+  }
+  function addCamera(preset) {
+    setDevices((prev) => [
+      ...prev,
+      {
+        id: uid(),
+        name: preset.name,
+        watts_standby: preset.watts_standby,
+        watts_strained: preset.watts_strained,
+        kind: "camera",
+      },
+    ]);
   }
 
   // Shared input/select classes
@@ -591,7 +912,7 @@ export default function PowerVibe() {
                     const val = e.target.value;
                     if (val) {
                       const preset = PRESETS.cameras.find((c) => c.name === val);
-                      if (preset) addDevice(preset.name, preset.watts);
+                      if (preset) addCamera(preset);
                       e.currentTarget.selectedIndex = 0;
                     }
                   }}
@@ -599,7 +920,9 @@ export default function PowerVibe() {
                 >
                   <option value="">Select camera…</option>
                   {PRESETS.cameras.map((c) => (
-                    <option key={c.name} value={c.name}>{`${c.name} (${c.watts}W)`}</option>
+                    <option key={c.name} value={c.name}>
+                      {c.name} ({c.watts_standby}–{c.watts_strained}W)
+                    </option>
                   ))}
                 </select>
               </div>
@@ -645,6 +968,10 @@ export default function PowerVibe() {
                 Full list
               </button>
             </div>
+            <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+              Tip: Kit presets represent typical draw. Adding MDR/UMC + motors
+              individually is closer to worst-case peaks.
+            </p>
           </div>
         </div>
 
@@ -660,7 +987,13 @@ export default function PowerVibe() {
             return (
               <div
                 key={d.id}
-                className="grid grid-cols-12 items-center gap-3 px-4 py-3 border-t dark:border-neutral-800"
+                className={`grid grid-cols-12 items-center gap-3 px-4 py-3 border-t dark:border-neutral-800 ${
+                  d.kind === "camera"
+                    ? loadMode === "strained"
+                      ? "bg-amber-50/70 dark:bg-amber-900/20"
+                      : "bg-emerald-50/50 dark:bg-emerald-900/15"
+                    : ""
+                }`}
               >
                 <input
                   value={d.name}
@@ -812,6 +1145,22 @@ export default function PowerVibe() {
                   step={0.1}
                 />
               </div>
+              <div className="col-span-12">
+                <label className="block text-sm mb-1">Power source</label>
+                <div className={selectWrap}>
+                  <select
+                    className={selectClass}
+                    value={powerSource}
+                    onChange={(e) => setPowerSource(e.target.value)}
+                  >
+                    {POWER_SOURCES.map((source) => (
+                      <option key={source.id} value={source.id}>
+                        {source.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
               <p className="col-span-12 text-xs text-neutral-500 dark:text-neutral-400">
                 Select a preset to auto-fill values, or choose <em>Custom</em> and enter Wh
                 or V+Ah manually.
@@ -834,18 +1183,77 @@ export default function PowerVibe() {
             <p className="text-xs text-neutral-500 dark:text-neutral-400">
               Accounts for cold weather, aging, sag & reserve. Typical: 10–50%.
             </p>
+            <div className="mt-3">
+              <label className="block text-sm mb-1">Camera load mode</label>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setLoadMode("standby")}
+                  className={`px-3 py-2 rounded-xl border text-sm ${
+                    loadMode === "standby"
+                      ? "bg-black text-white dark:bg-white dark:text-black"
+                      : "hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  }`}
+                >
+                  Standby / Typical
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLoadMode("strained")}
+                  className={`px-3 py-2 rounded-xl border text-sm ${
+                    loadMode === "strained"
+                      ? "bg-black text-white dark:bg-white dark:text-black"
+                      : "hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  }`}
+                >
+                  Strained / Worst-case
+                </button>
+              </div>
+              <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                Adjusts camera body draw using standby vs strained values (e.g. high FPS /
+                heavy processing).
+              </p>
+            </div>
           </div>
         </div>
 
         {/* Summary cards */}
         <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className={`rounded-2xl shadow-sm border p-4 ${toneClasses(loadTone)}`}>
-            <h3 className="font-semibold mb-2">Total Load</h3>
-            <AmpGauge value={totalCurrentA} max={12} />
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="font-semibold">Total Load</h3>
+              <span className="text-xs px-2 py-1 rounded-lg border bg-neutral-100 dark:bg-neutral-800 dark:border-neutral-700">
+                Mode:{" "}
+                <span className="font-medium">
+                  {loadMode === "strained" ? "Strained" : "Standby"}
+                </span>
+              </span>
+            </div>
+            <AmpGauge value={totalCurrentA} max={powerSourceObj.maxA} />
             <div className="mt-3 text-sm text-neutral-700 dark:text-neutral-300 flex items-center gap-2 flex-wrap">
               <Badge tone="neutral">{totalWatts.toFixed(1)} W total</Badge>
               <span>
                 ≈ {totalCurrentA.toFixed(2)} A @ {(systemV ?? 14.4).toFixed(1)} V
+              </span>
+            </div>
+            <div className="mt-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 bg-neutral-100 dark:bg-neutral-800 text-xs text-neutral-700 dark:text-neutral-300">
+              <span className="font-medium">Source:</span>
+              <span>{powerSourceObj.label}</span>
+              {powerSourceObj.id === "psu" ? (
+                <span className="text-neutral-500 dark:text-neutral-400">
+                  · PSU mode (no battery runtime limit)
+                </span>
+              ) : (
+                <span className="text-neutral-500 dark:text-neutral-400">
+                  · Limit: <span className="font-medium">{powerSourceObj.maxA}A</span>
+                </span>
+              )}
+              <span
+                title="This setting changes the typical safe current limit and connector guidance. Plates often have lower limits than block batteries."
+                className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full border border-neutral-300 dark:border-neutral-600 text-[11px] text-neutral-600 dark:text-neutral-300"
+                aria-label="Power source info"
+              >
+                i
               </span>
             </div>
             {warning && (
@@ -865,7 +1273,7 @@ export default function PowerVibe() {
 
           <div className="rounded-2xl shadow-sm border p-4 bg-gradient-to-br from-neutral-50 to-zinc-50 border-neutral-200 dark:from-neutral-900/30 dark:to-zinc-900/20 dark:border-neutral-800">
             <h3 className="font-semibold mb-2">Connector Guidance</h3>
-            <div className="text-sm">{connectorNote(totalCurrentA)}</div>
+            <div className="text-sm">{connectorNote(totalCurrentA, powerSource)}</div>
             <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
               Always verify plate/cable ratings for your specific hardware.
             </p>
@@ -875,6 +1283,10 @@ export default function PowerVibe() {
         <p className="mt-6 text-xs text-neutral-500 dark:text-neutral-400">
           Formulas: P = V × I; Total P = ΣPᵢ; Runtime (h) = UsableWh ÷ TotalW; UsableWh = Wh ×
           (1 − derate).
+        </p>
+        <p className="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+          Thanks to everyone who has shared knowledge, feedback, and real-world experience
+          to help shape Power Vibe.
         </p>
 
         {/* iOS-friendly full list modal for Cameras */}
@@ -903,13 +1315,13 @@ export default function PowerVibe() {
                     key={c.name}
                     className="w-full text-left px-3 py-2 rounded-xl border dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800"
                     onClick={() => {
-                      addDevice(c.name, c.watts);
+                      addCamera(c);
                       setShowCamList(false);
                     }}
                   >
                     {c.name}{" "}
                     <span className="text-neutral-500 dark:text-neutral-400">
-                      ({c.watts}W)
+                      ({c.watts_standby}W)
                     </span>
                   </button>
                 ))}
