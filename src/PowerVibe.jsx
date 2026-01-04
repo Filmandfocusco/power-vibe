@@ -1288,6 +1288,20 @@ export default function PowerVibe() {
           Thanks to everyone who has shared knowledge, feedback, and real-world experience
           to help shape Power Vibe.
         </p>
+        <div className="mt-6 rounded-2xl border p-4 bg-neutral-50 dark:bg-neutral-900 dark:border-neutral-800">
+          <h4 className="font-semibold mb-2 text-sm">How Power Vibe works</h4>
+          <p className="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed whitespace-pre-line">
+            {`Power Vibe is a planning tool, not a replacement for manufacturer specs or on-set judgement.
+
+• Camera bodies use realistic power ranges (Standby vs Strained)
+• Accessories use typical on-set draw, not peak specifications
+• Runtime estimates include a user-adjustable derate for real conditions
+• Current limits are highlighted to help avoid plate, cable, or port overload
+
+Actual power draw varies with temperature, battery health, cabling, and shooting conditions.
+Always verify on set.`}
+          </p>
+        </div>
 
         {/* iOS-friendly full list modal for Cameras */}
         {showCamList && (
