@@ -424,6 +424,73 @@ const BATTERY_PRESETS = [
     brand: "Anton Bauer",
   },
 
+  // 26V / 28V block batteries
+  {
+    label: "IDX VL-9X – 90Wh (28V)",
+    wh: 90,
+    volts: 28,
+    brand: "IDX",
+  },
+  {
+    label: "⭐ IDX VL-2000 – 190Wh (28V)",
+    wh: 190,
+    volts: 28,
+    brand: "IDX",
+    common: true,
+  },
+  {
+    label: "⭐ IDX VL-3000 – 300Wh (28V)",
+    wh: 300,
+    volts: 28,
+    brand: "IDX",
+    common: true,
+  },
+  {
+    label: "⭐ Core SWX Helix Max 360 – 367Wh (dual 14/28V)",
+    wh: 367,
+    volts: 28,
+    brand: "Core SWX",
+    common: true,
+  },
+  {
+    label: "Core SWX Helix 9 Mini – 98Wh (dual 14/28V)",
+    wh: 98,
+    volts: 28,
+    brand: "Core SWX",
+  },
+  {
+    label: "Bebob DV-L25-95 – 95Wh (26V)",
+    wh: 95,
+    volts: 26,
+    brand: "Bebob",
+  },
+  {
+    label: "⭐ Bebob DV-L25-190 – 190Wh (26V)",
+    wh: 190,
+    volts: 26,
+    brand: "Bebob",
+    common: true,
+  },
+  {
+    label: "Hawk-Woods DMX-9 – 90Wh (26V)",
+    wh: 90,
+    volts: 26,
+    brand: "Hawk-Woods",
+  },
+  {
+    label: "⭐ Hawk-Woods BM-L190 – 190Wh (26V)",
+    wh: 190,
+    volts: 26,
+    brand: "Hawk-Woods",
+    common: true,
+  },
+  {
+    label: "Hawk-Woods BM-L290 – 290Wh (26V)",
+    wh: 290,
+    volts: 26,
+    brand: "Hawk-Woods",
+  },
+
   // Hawk-Woods
   {
     label: "Hawk-Woods Mini V-Lok – 98Wh (14.4V)",
@@ -458,6 +525,42 @@ const BATTERY_PRESETS = [
     wh: 147,
     volts: 14.4,
     brand: "Bebob",
+  },
+
+  // FXLiion
+  {
+    label: "FXLiion 200Wh – 200Wh (14.4V)",
+    wh: 200,
+    volts: 14.4,
+    brand: "FXLiion",
+  },
+  {
+    label: "⭐ FXLiion 300Wh – 300Wh (14.4V)",
+    wh: 300,
+    volts: 14.4,
+    brand: "FXLiion",
+    common: true,
+  },
+
+  // SmallRig
+  {
+    label: "SmallRig 50Wh – 50Wh (14.4V)",
+    wh: 50,
+    volts: 14.4,
+    brand: "SmallRig",
+  },
+  {
+    label: "⭐ SmallRig 99Wh – 99Wh (14.4V)",
+    wh: 99,
+    volts: 14.4,
+    brand: "SmallRig",
+    common: true,
+  },
+  {
+    label: "SmallRig 212Wh – 212Wh (14.4V)",
+    wh: 212,
+    volts: 14.4,
+    brand: "SmallRig",
   },
 
   // IDX (extended)
@@ -514,6 +617,13 @@ const BATTERY_PRESETS = [
     wh: 146,
     volts: 14.4,
     brand: "IDX",
+  },
+  {
+    label: "⭐ IDX Endura 300Wh – 300Wh (14.4V)",
+    wh: 300,
+    volts: 14.4,
+    brand: "IDX",
+    common: true,
   },
   {
     label: "IDX Endura ELITE – 142Wh (14.4V)",
