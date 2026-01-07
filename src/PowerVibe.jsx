@@ -938,6 +938,11 @@ export default function PowerVibe() {
   }, [totalCurrentA, powerSourceObj]);
 
   // Actions
+  function syncPowerSourceFromBattery(presetVolts) {
+    if (!presetVolts) return;
+    if (presetVolts >= 20) setPowerSource("block-26");
+    else setPowerSource("onboard");
+  }
   function addDevice(name, watts) {
     setDevices((prev) => [...prev, { id: uid(), name, watts }]);
   }
@@ -1201,6 +1206,7 @@ export default function PowerVibe() {
                           setBatteryWh(String(preset.wh));
                           setBatteryV(String(preset.volts));
                           setBatteryAh("");
+                          syncPowerSourceFromBattery(preset.volts);
                         }
                       }}
                       size={batterySelectSize}
@@ -1574,6 +1580,7 @@ Always verify on set.`}
                           setBatteryWh(String(p.wh));
                           setBatteryV(String(p.volts));
                           setBatteryAh("");
+                          syncPowerSourceFromBattery(p.volts);
                           setShowBattList(false);
                         }}
                       >
