@@ -647,6 +647,7 @@ const BATTERY_PRESETS = [
 
 const POWER_SOURCES = [
   { id: "onboard", label: "Onboard 14V battery (plate)", volts: 14.4, contA: 12, peakA: 20 },
+  { id: "onboard-26", label: "Onboard 26V battery (plate)", volts: 26, contA: 12, peakA: 20 },
   { id: "block-14", label: "Block battery 14V", volts: 14.4, contA: 20, peakA: 30 },
   { id: "block-26", label: "Block battery 26V", volts: 26, contA: 16, peakA: 24 },
   { id: "psu", label: "AC PSU / mains", volts: 14.4, contA: 30, peakA: 40 },
@@ -871,7 +872,7 @@ export default function PowerVibe() {
 
   useEffect(() => {
     // Auto-set voltage only when it clearly matches the selected source
-    if (powerSource === "block-26") {
+    if (powerSource === "block-26" || powerSource === "onboard-26") {
       if (String(batteryV).trim() === "" || Number(batteryV) < 20) setBatteryV("26");
     } else if (powerSource === "block-14" || powerSource === "onboard") {
       if (String(batteryV).trim() === "" || Number(batteryV) >= 20) setBatteryV("14.4");
@@ -1379,7 +1380,7 @@ export default function PowerVibe() {
                 </span>
               )}
               <span
-                title="This setting changes the typical safe current limit and connector guidance. Plates often have lower limits than block batteries."
+                title="This setting changes the typical safe current limit and connector guidance. Plates often have lower limits than block batteries. 26V reduces current for the same load."
                 className="ml-1 inline-flex h-5 w-5 items-center justify-center rounded-full border border-neutral-300 dark:border-neutral-600 text-[11px] text-neutral-600 dark:text-neutral-300"
                 aria-label="Power source info"
               >
