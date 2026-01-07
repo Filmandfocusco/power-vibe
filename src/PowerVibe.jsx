@@ -857,6 +857,15 @@ export default function PowerVibe() {
     }
   }, [isDark]);
 
+  useEffect(() => {
+    // Auto-set voltage only when it clearly matches the selected source
+    if (powerSource === "block-26") {
+      if (String(batteryV).trim() === "" || Number(batteryV) < 20) setBatteryV("26");
+    } else if (powerSource === "block-14" || powerSource === "onboard") {
+      if (String(batteryV).trim() === "" || Number(batteryV) >= 20) setBatteryV("14.4");
+    }
+  }, [powerSource]);
+
   // Devices state
   const [devices, setDevices] = useState([]);
 
