@@ -646,12 +646,10 @@ const BATTERY_PRESETS = [
 ];
 
 const POWER_SOURCES = [
-  { id: "v-mount", label: "V-Mount Plate", maxA: 12 },
-  { id: "gold-mount", label: "Gold Mount Plate", maxA: 12 },
-  { id: "3-pin-xlr", label: "3-pin XLR", maxA: 10 },
-  { id: "2-pin-lemo", label: "2-pin Lemo", maxA: 5 },
-  { id: "block-battery", label: "Block Battery", maxA: 20 },
-  { id: "psu", label: "PSU / Mains", maxA: 30 },
+  { id: "onboard", label: "Onboard 14V battery (plate)", volts: 14.4, contA: 12, peakA: 20 },
+  { id: "block-14", label: "Block battery 14V", volts: 14.4, contA: 20, peakA: 30 },
+  { id: "block-26", label: "Block battery 26V", volts: 26, contA: 16, peakA: 24 },
+  { id: "psu", label: "AC PSU / mains", volts: 14.4, contA: 30, peakA: 40 },
 ];
 
 // ---- Helpers
@@ -689,16 +687,16 @@ function runtimeHours(wh, totalWatts, derate = 0.1) {
 }
 function connectorNote(currentA, sourceId) {
   const src = POWER_SOURCES.find((source) => source.id === sourceId) ?? POWER_SOURCES[0];
-  const limit = src.maxA;
+  const limit = src.contA;
 
   if (sourceId === "psu") {
     return "PSU / mains: ensure the PSU is rated comfortably above your peak load. Runtime is not battery-limited.";
   }
   if (currentA > limit) {
-    return `❗ Over the typical limit for this source (${limit}A). Split loads or move accessories to a distro/block.`;
+    return `❗ Over the selected source limit (${limit}A). Split loads or move accessories to a distro/block.`;
   }
   if (currentA > limit * 0.8) {
-    return `⚠️ Close to the limit (~${limit}A). Verify plate/distro and cable ratings.`;
+    return `⚠️ Close to the selected source limit (~${limit}A). Verify plate/distro and cable ratings.`;
   }
   if (currentA > 6) {
     return "OK: use quality 2-pin / D-Tap / RS outputs and keep cable runs sensible.";
@@ -792,7 +790,7 @@ function AmpGauge({ value = 0, max = 12 }) {
       <div>
         <div className="text-2xl font-semibold leading-6">{value.toFixed(2)}A</div>
         <div className="text-xs text-neutral-600 dark:text-neutral-400">
-          of {max}A typical plate limit
+          of {max}A selected source limit
         </div>
       </div>
     </div>
@@ -904,26 +902,31 @@ export default function PowerVibe() {
     () => POWER_SOURCES.find((source) => source.id === powerSource) ?? POWER_SOURCES[0],
     [powerSource]
   );
+  const maxCurrent = useMemo(() => powerSourceObj.contA, [powerSourceObj]);
   const warning = useMemo(() => {
     if (powerSourceObj.id === "psu") return "";
-    const limit = powerSourceObj.maxA;
+    const cont = powerSourceObj.contA;
 
-    if (totalCurrentA > limit) {
-      return `❗ Exceeds typical limit (${limit}A) for selected source. Split loads or use a higher-rated distro/block.`;
+    if (totalCurrentA > cont) {
+      return `❗ Over the continuous limit (${cont}A). You may trip on start-up/inrush. Consider a 26V source or split loads to a distro.`;
     }
-    if (totalCurrentA > limit * 0.8) {
-      return `⚠️ Near the limit (~${limit}A). Verify plate/distro and cable ratings.`;
+    if (totalCurrentA > cont * 0.85) {
+      return `⚠️ Near the continuous limit (${cont}A). Start-up/inrush can cause shutdowns. Consider 26V or reduce load.`;
     }
     return "";
   }, [totalCurrentA, powerSourceObj]);
   const loadTone =
-    powerSourceObj.id === "psu"
-      ? "ok"
-      : totalCurrentA > powerSourceObj.maxA
-        ? "danger"
-        : totalCurrentA > powerSourceObj.maxA * 0.8
-          ? "warn"
-          : "ok";
+    powerSourceObj.id !== "psu" && totalCurrentA > powerSourceObj.contA
+      ? "danger"
+      : powerSourceObj.id !== "psu" && totalCurrentA > powerSourceObj.contA * 0.85
+        ? "warn"
+        : "ok";
+  const recommend26V = useMemo(() => {
+    if (powerSourceObj.id === "psu") return false;
+    if (powerSourceObj.id === "block-26") return false;
+
+    return totalCurrentA > powerSourceObj.contA * 0.85;
+  }, [totalCurrentA, powerSourceObj]);
 
   // Actions
   function addDevice(name, watts) {
@@ -1339,7 +1342,7 @@ export default function PowerVibe() {
                 </span>
               </span>
             </div>
-            <AmpGauge value={totalCurrentA} max={powerSourceObj.maxA} />
+            <AmpGauge value={totalCurrentA} max={maxCurrent} />
             <div className="mt-3 text-sm text-neutral-700 dark:text-neutral-300 flex items-center gap-2 flex-wrap">
               <Badge tone="neutral">{totalWatts.toFixed(1)} W total</Badge>
               <span>
@@ -1355,7 +1358,8 @@ export default function PowerVibe() {
                 </span>
               ) : (
                 <span className="text-neutral-500 dark:text-neutral-400">
-                  · Limit: <span className="font-medium">{powerSourceObj.maxA}A</span>
+                  · Limit: <span className="font-medium">{powerSourceObj.contA}A</span> cont /{" "}
+                  <span className="font-medium">{powerSourceObj.peakA}A</span> peak
                 </span>
               )}
               <span
@@ -1369,6 +1373,13 @@ export default function PowerVibe() {
             {warning && (
               <div className="mt-3 text-sm text-red-600 dark:text-red-400">
                 {warning}
+              </div>
+            )}
+            {recommend26V && (
+              <div className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
+                💡 Tip: This load is easier to run on{" "}
+                <span className="font-medium">26V</span> (lower current, less stress on
+                plates/cables).
               </div>
             )}
           </div>
