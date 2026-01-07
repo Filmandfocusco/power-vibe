@@ -430,12 +430,14 @@ const BATTERY_PRESETS = [
     wh: 90,
     volts: 28,
     brand: "IDX",
+    type: "block",
   },
   {
     label: "⭐ IDX VL-2000 – 190Wh (28V)",
     wh: 190,
     volts: 28,
     brand: "IDX",
+    type: "block",
     common: true,
   },
   {
@@ -443,6 +445,7 @@ const BATTERY_PRESETS = [
     wh: 300,
     volts: 28,
     brand: "IDX",
+    type: "block",
     common: true,
   },
   {
@@ -450,6 +453,7 @@ const BATTERY_PRESETS = [
     wh: 367,
     volts: 28,
     brand: "Core SWX",
+    type: "block",
     common: true,
   },
   {
@@ -457,18 +461,21 @@ const BATTERY_PRESETS = [
     wh: 98,
     volts: 28,
     brand: "Core SWX",
+    type: "block",
   },
   {
     label: "Bebob DV-L25-95 – 95Wh (26V)",
     wh: 95,
     volts: 26,
     brand: "Bebob",
+    type: "block",
   },
   {
     label: "⭐ Bebob DV-L25-190 – 190Wh (26V)",
     wh: 190,
     volts: 26,
     brand: "Bebob",
+    type: "block",
     common: true,
   },
   {
@@ -476,12 +483,14 @@ const BATTERY_PRESETS = [
     wh: 90,
     volts: 26,
     brand: "Hawk-Woods",
+    type: "block",
   },
   {
     label: "⭐ Hawk-Woods BM-L190 – 190Wh (26V)",
     wh: 190,
     volts: 26,
     brand: "Hawk-Woods",
+    type: "block",
     common: true,
   },
   {
@@ -489,6 +498,7 @@ const BATTERY_PRESETS = [
     wh: 290,
     volts: 26,
     brand: "Hawk-Woods",
+    type: "block",
   },
 
   // Hawk-Woods
@@ -533,12 +543,14 @@ const BATTERY_PRESETS = [
     wh: 200,
     volts: 14.4,
     brand: "FXLiion",
+    type: "onboard",
   },
   {
     label: "⭐ FXLiion 300Wh – 300Wh (14.4V)",
     wh: 300,
     volts: 14.4,
     brand: "FXLiion",
+    type: "onboard",
     common: true,
   },
 
@@ -548,12 +560,14 @@ const BATTERY_PRESETS = [
     wh: 50,
     volts: 14.4,
     brand: "SmallRig",
+    type: "onboard",
   },
   {
     label: "⭐ SmallRig 99Wh – 99Wh (14.4V)",
     wh: 99,
     volts: 14.4,
     brand: "SmallRig",
+    type: "onboard",
     common: true,
   },
   {
@@ -561,6 +575,7 @@ const BATTERY_PRESETS = [
     wh: 212,
     volts: 14.4,
     brand: "SmallRig",
+    type: "onboard",
   },
 
   // IDX (extended)
@@ -623,6 +638,7 @@ const BATTERY_PRESETS = [
     wh: 300,
     volts: 14.4,
     brand: "IDX",
+    type: "onboard",
     common: true,
   },
   {
@@ -940,10 +956,14 @@ export default function PowerVibe() {
   }, [totalCurrentA, powerSourceObj]);
 
   // Actions
-  function syncPowerSourceFromBattery(presetVolts) {
+  function syncPowerSourceFromBattery(presetVolts, presetType) {
     if (!presetVolts) return;
-    if (presetVolts >= 20) setPowerSource("block-26");
-    else setPowerSource("onboard");
+
+    const is26 = presetVolts >= 20;
+    const type = presetType || (is26 ? "block" : "onboard");
+
+    if (is26) setPowerSource(type === "onboard" ? "onboard-26" : "block-26");
+    else setPowerSource(type === "block" ? "block-14" : "onboard");
   }
   function addDevice(name, watts) {
     setDevices((prev) => [...prev, { id: uid(), name, watts }]);
@@ -1208,7 +1228,7 @@ export default function PowerVibe() {
                           setBatteryWh(String(preset.wh));
                           setBatteryV(String(preset.volts));
                           setBatteryAh("");
-                          syncPowerSourceFromBattery(preset.volts);
+                          syncPowerSourceFromBattery(preset.volts, preset.type);
                         }
                       }}
                       size={batterySelectSize}
@@ -1582,7 +1602,7 @@ Always verify on set.`}
                           setBatteryWh(String(p.wh));
                           setBatteryV(String(p.volts));
                           setBatteryAh("");
-                          syncPowerSourceFromBattery(p.volts);
+                          syncPowerSourceFromBattery(p.volts, p.type);
                           setShowBattList(false);
                         }}
                       >
