@@ -25,138 +25,163 @@ const PRESETS = {
   ],
   accessories: [
     // Monitoring
-    { name: "SmallHD 703", watts: 18, brand: "SmallHD", common: true },
-    { name: "SmallHD Cine 7", watts: 22, brand: "SmallHD", common: true },
-    { name: "SmallHD Focus 5\" Monitor", watts: 8, brand: "SmallHD" },
-    { name: "SmallHD Focus 7\" Monitor", watts: 12, brand: "SmallHD" },
-    { name: "SmallHD Cine 5\" Monitor", watts: 10, brand: "SmallHD" },
+    { name: "SmallHD 703", watts: 18, brand: "SmallHD", category: "Video", common: true },
+    { name: "SmallHD Cine 7", watts: 22, brand: "SmallHD", category: "Video", common: true },
+    { name: "SmallHD Focus 5\" Monitor", watts: 8, brand: "SmallHD", category: "Video" },
+    { name: "SmallHD Focus 7\" Monitor", watts: 12, brand: "SmallHD", category: "Video" },
+    { name: "SmallHD Cine 5\" Monitor", watts: 10, brand: "SmallHD", category: "Video" },
     {
       name: "Atomos Ninja V 5\" Recorder/Monitor",
       watts: 10,
       brand: "Atomos",
+      category: "Video",
       common: true,
     },
-    { name: "Atomos Shinobi 7\" Monitor", watts: 14, brand: "Atomos" },
-    { name: "Atomos Shogun 7", watts: 25, brand: "Atomos" },
+    { name: "Atomos Shinobi 7\" Monitor", watts: 14, brand: "Atomos", category: "Video" },
+    { name: "Atomos Shogun 7", watts: 25, brand: "Atomos", category: "Video" },
     {
       name: "TVLogic F-5A 5.5\" On-Camera Monitor",
       watts: 10,
       brand: "TVLogic",
+      category: "Video",
     },
     {
       name: "TVLogic VFM-058W 5.5\" On-Camera Monitor",
       watts: 9.6,
       brand: "TVLogic",
+      category: "Video",
     },
-    { name: "TVLogic VFM-055A 5.5\" OLED Monitor", watts: 10, brand: "TVLogic" },
+    {
+      name: "TVLogic VFM-055A 5.5\" OLED Monitor",
+      watts: 10,
+      brand: "TVLogic",
+      category: "Video",
+    },
     {
       name: "TVLogic F-7H mk2 7\" High-Bright Monitor",
       watts: 22,
       brand: "TVLogic",
+      category: "Video",
     },
 
     // Wireless video (Teradek)
-    { name: "Teradek Bolt 6 TX", watts: 20, brand: "Teradek", common: true },
-    { name: "Teradek Bolt 6 RX", watts: 25, brand: "Teradek", common: true },
-    { name: "Teradek Bolt 4K 750 TX", watts: 15, brand: "Teradek" },
-    { name: "Teradek Bolt 4K 750 RX", watts: 18, brand: "Teradek" },
-    { name: "Teradek Bolt 4K 1500 TX", watts: 18, brand: "Teradek" },
-    { name: "Teradek Bolt 4K 1500 RX", watts: 22, brand: "Teradek" },
-    { name: "Teradek Bolt 3000 TX", watts: 20, brand: "Teradek" },
-    { name: "Teradek Bolt 3000 RX", watts: 25, brand: "Teradek" },
+    { name: "Teradek Bolt 6 TX", watts: 20, brand: "Teradek", category: "Video", common: true },
+    { name: "Teradek Bolt 6 RX", watts: 25, brand: "Teradek", category: "Video", common: true },
+    { name: "Teradek Bolt 4K 750 TX", watts: 15, brand: "Teradek", category: "Video" },
+    { name: "Teradek Bolt 4K 750 RX", watts: 18, brand: "Teradek", category: "Video" },
+    { name: "Teradek Bolt 4K 1500 TX", watts: 18, brand: "Teradek", category: "Video" },
+    { name: "Teradek Bolt 4K 1500 RX", watts: 22, brand: "Teradek", category: "Video" },
+    { name: "Teradek Bolt 3000 TX", watts: 20, brand: "Teradek", category: "Video" },
+    { name: "Teradek Bolt 3000 RX", watts: 25, brand: "Teradek", category: "Video" },
 
     // Kits / Bundles (Typical draw)
     {
       name: "Preston Kit (MDR-2 + 1 Motor) – typical",
       watts: 11,
       brand: "Preston",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "Preston Kit (MDR-2 + 2 Motors) – typical",
       watts: 15,
       brand: "Preston",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "Preston Kit (MDR-2 + 3 Motors) – typical",
       watts: 19,
       brand: "Preston",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "Preston Kit (MDR-2 + 3 Motors + Light Ranger 2) – typical",
       watts: 22.5,
       brand: "Preston",
+      category: "Lens Control",
     },
     {
       name: "Preston Kit (MDR-3 + 1 Motor) – typical",
       watts: 11,
       brand: "Preston",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "Preston Kit (MDR-3 + 2 Motors) – typical",
       watts: 15,
       brand: "Preston",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "Preston Kit (MDR-3 + 3 Motors) – typical",
       watts: 19,
       brand: "Preston",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "Preston Kit (MDR-3 + 3 Motors + Light Ranger 2) – typical",
       watts: 22.5,
       brand: "Preston",
+      category: "Lens Control",
     },
     {
       name: "Preston Kit (MDR-4 + 1 Motor) – typical",
       watts: 12,
       brand: "Preston",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "Preston Kit (MDR-4 + 2 Motors) – typical",
       watts: 16,
       brand: "Preston",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "Preston Kit (MDR-4 + 3 Motors) – typical",
       watts: 20,
       brand: "Preston",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "Preston Kit (MDR-4 + 3 Motors + Light Ranger 2) – typical",
       watts: 23.5,
       brand: "Preston",
+      category: "Lens Control",
     },
     {
       name: "Preston Kit (MDR-5 + 1 Motor) – typical",
       watts: 13,
       brand: "Preston",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "Preston Kit (MDR-5 + 2 Motors) – typical",
       watts: 17,
       brand: "Preston",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "Preston Kit (MDR-5 + 3 Motors) – typical",
       watts: 21,
       brand: "Preston",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "Preston Kit (MDR-5 + 3 Motors + Light Ranger 2) – typical",
       watts: 24.5,
       brand: "Preston",
+      category: "Lens Control",
     },
 
     // ARRI ECS Kits (Typical draw) — with RIA-1
@@ -164,45 +189,53 @@ const PRESETS = {
       name: "ARRI ECS Kit (RIA-1 + 1× cforce Mini) – typical",
       watts: 14,
       brand: "ARRI",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "ARRI ECS Kit (RIA-1 + 2× cforce Mini) – typical",
       watts: 19,
       brand: "ARRI",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "ARRI ECS Kit (RIA-1 + 3× cforce Mini) – typical",
       watts: 24,
       brand: "ARRI",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "ARRI ECS Kit (RIA-1 + Mini + RF) – typical",
       watts: 21,
       brand: "ARRI",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "ARRI ECS Kit (RIA-1 + 2× Mini + RF) – typical",
       watts: 26,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (RIA-1 + 1× cforce Plus) – typical",
       watts: 26,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (RIA-1 + Plus + Mini) – typical",
       watts: 32,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (RIA-1 + Plus + 2× Mini) – typical",
       watts: 39,
       brand: "ARRI",
+      category: "Lens Control",
     },
 
     // ARRI ECS Kits (Typical draw) — direct LBUS from camera (no RIA-1)
@@ -210,45 +243,53 @@ const PRESETS = {
       name: "ARRI ECS Kit (Direct LBUS + 1× cforce Mini) – typical",
       watts: 10,
       brand: "ARRI",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "ARRI ECS Kit (Direct LBUS + 2× cforce Mini) – typical",
       watts: 15,
       brand: "ARRI",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "ARRI ECS Kit (Direct LBUS + 3× cforce Mini) – typical",
       watts: 20,
       brand: "ARRI",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "ARRI ECS Kit (Direct LBUS + Mini + RF) – typical",
       watts: 17,
       brand: "ARRI",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "ARRI ECS Kit (Direct LBUS + 2× Mini + RF) – typical",
       watts: 22,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (Direct LBUS + 1× cforce Plus) – typical",
       watts: 22,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (Direct LBUS + Plus + Mini) – typical",
       watts: 28,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (Direct LBUS + Plus + 2× Mini) – typical",
       watts: 35,
       brand: "ARRI",
+      category: "Lens Control",
     },
 
     // ARRI ECS Kits (Typical draw) — UMC-4 based
@@ -256,38 +297,45 @@ const PRESETS = {
       name: "ARRI ECS Kit (UMC-4 + 1× cforce Mini) – typical",
       watts: 15,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (UMC-4 + 2× cforce Mini) – typical",
       watts: 20,
       brand: "ARRI",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "ARRI ECS Kit (UMC-4 + 3× cforce Mini) – typical",
       watts: 25,
       brand: "ARRI",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "ARRI ECS Kit (UMC-4 + Mini + RF) – typical",
       watts: 22,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (UMC-4 + 2× Mini + RF) – typical",
       watts: 27,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (UMC-4 + 1× cforce Plus) – typical",
       watts: 27,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (UMC-4 + Plus + Mini) – typical",
       watts: 33,
       brand: "ARRI",
+      category: "Lens Control",
     },
 
     // ARRI ECS Kits (Typical draw) — AMC-1 based
@@ -295,82 +343,109 @@ const PRESETS = {
       name: "ARRI ECS Kit (AMC-1 + 1× cforce Mini) – typical",
       watts: 14,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (AMC-1 + 2× cforce Mini) – typical",
       watts: 19,
       brand: "ARRI",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "ARRI ECS Kit (AMC-1 + 3× cforce Mini) – typical",
       watts: 24,
       brand: "ARRI",
+      category: "Lens Control",
       common: true,
     },
     {
       name: "ARRI ECS Kit (AMC-1 + Mini + RF) – typical",
       watts: 21,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (AMC-1 + 2× Mini + RF) – typical",
       watts: 26,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (AMC-1 + 1× cforce Plus) – typical",
       watts: 26,
       brand: "ARRI",
+      category: "Lens Control",
     },
     {
       name: "ARRI ECS Kit (AMC-1 + Plus + Mini) – typical",
       watts: 32,
       brand: "ARRI",
+      category: "Lens Control",
     },
 
     // Lens control / motors & ARRI ecosystem
-    { name: "Preston MDR-2", watts: 6, brand: "Preston" },
-    { name: "Preston MDR-3", watts: 6, brand: "Preston" },
-    { name: "Preston MDR-4", watts: 6, brand: "Preston" },
-    { name: "Preston DM1X Motor", watts: 6, brand: "Preston" },
-    { name: "Preston DM2 Motor", watts: 7, brand: "Preston" },
-    { name: "Preston DM4 Motor", watts: 7, brand: "Preston" },
-    { name: "Heden M21VE Motor", watts: 6, brand: "Heden" },
-    { name: "Heden M26T Motor", watts: 6, brand: "Heden" },
-    { name: "Heden M26P Motor", watts: 6, brand: "Heden" },
-    { name: "Preston MDR-5", watts: 8, brand: "Preston" },
-    { name: "Cmotion CPro Motor", watts: 7, brand: "Cmotion" },
-    { name: "Tilta Nucleus-M Motor", watts: 6, brand: "Tilta" },
-    { name: "ARRI cforce Mini Motor", watts: 20, brand: "ARRI", common: true },
-    { name: "ARRI cforce Plus Motor", watts: 30, brand: "ARRI" },
-    { name: "ARRI cforce RF Motor", watts: 10, brand: "ARRI" },
-    { name: "ARRI RIA-1 Interface Adapter", watts: 5, brand: "ARRI" },
-    { name: "ARRI LCUBE CUB-1 Interface", watts: 5, brand: "ARRI" },
+    { name: "Preston MDR-2", watts: 6, brand: "Preston", category: "Lens Control" },
+    { name: "Preston MDR-3", watts: 6, brand: "Preston", category: "Lens Control" },
+    { name: "Preston MDR-4", watts: 6, brand: "Preston", category: "Lens Control" },
+    { name: "Preston DM1X Motor", watts: 6, brand: "Preston", category: "Lens Control" },
+    { name: "Preston DM2 Motor", watts: 7, brand: "Preston", category: "Lens Control" },
+    { name: "Preston DM4 Motor", watts: 7, brand: "Preston", category: "Lens Control" },
+    { name: "Heden M21VE Motor", watts: 6, brand: "Heden", category: "Lens Control" },
+    { name: "Heden M26T Motor", watts: 6, brand: "Heden", category: "Lens Control" },
+    { name: "Heden M26P Motor", watts: 6, brand: "Heden", category: "Lens Control" },
+    { name: "Preston MDR-5", watts: 8, brand: "Preston", category: "Lens Control" },
+    { name: "Cmotion CPro Motor", watts: 7, brand: "Cmotion", category: "Lens Control" },
+    { name: "Tilta Nucleus-M Motor", watts: 6, brand: "Tilta", category: "Lens Control" },
+    {
+      name: "ARRI cforce Mini Motor",
+      watts: 20,
+      brand: "ARRI",
+      category: "Lens Control",
+      common: true,
+    },
+    { name: "ARRI cforce Plus Motor", watts: 30, brand: "ARRI", category: "Lens Control" },
+    { name: "ARRI cforce RF Motor", watts: 10, brand: "ARRI", category: "Lens Control" },
+    {
+      name: "ARRI RIA-1 Interface Adapter",
+      watts: 5,
+      brand: "ARRI",
+      category: "Lens Control",
+    },
+    { name: "ARRI LCUBE CUB-1 Interface", watts: 5, brand: "ARRI", category: "Lens Control" },
 
     // Focus tools
     {
       name: "Focusbug Cine RT Rangefinder",
       watts: 10,
       brand: "Focusbug",
+      category: "Lens Control",
       common: true,
     },
     {
-      name: "Preston Light Ranger 2", watts: 3, brand: "Preston" },
+      name: "Preston Light Ranger 2",
+      watts: 3,
+      brand: "Preston",
+      category: "Lens Control",
+    },
     {
-      name: "Cinema Electronics CineTape", watts: 3.5, brand: "Cinema Electronics" },
+      name: "Cinema Electronics CineTape",
+      watts: 3.5,
+      brand: "Cinema Electronics",
+      category: "Lens Control",
+    },
 
     // On-board lights
-    { name: "Aputure AL-M9 Mini Light", watts: 9, brand: "Aputure" },
-    { name: "Lume Cube Panel Pro", watts: 16, brand: "Lume Cube" },
+    { name: "Aputure AL-M9 Mini Light", watts: 9, brand: "Aputure", category: "Other" },
+    { name: "Lume Cube Panel Pro", watts: 16, brand: "Lume Cube", category: "Other" },
 
     // Rain deflectors
-    { name: "Movmax Hurricane Rain Deflector", watts: 24, brand: "Movmax" },
+    { name: "Movmax Hurricane Rain Deflector", watts: 24, brand: "Movmax", category: "Other" },
 
     // Stabilisation
-    { name: "DJI Ronin 2", watts: 60, brand: "DJI", common: true },
-    { name: "DJI Ronin 2 (Gimbal Only)", watts: 40, brand: "DJI" },
-    { name: "Freefly Movi Pro (System)", watts: 50, brand: "Freefly" },
+    { name: "DJI Ronin 2", watts: 60, brand: "DJI", category: "Other", common: true },
+    { name: "DJI Ronin 2 (Gimbal Only)", watts: 40, brand: "DJI", category: "Other" },
+    { name: "Freefly Movi Pro (System)", watts: 50, brand: "Freefly", category: "Other" },
   ],
 };
 
@@ -885,6 +960,7 @@ export default function PowerVibe() {
   const [deratePct, setDeratePct] = useState("10");
   const [powerSource, setPowerSource] = useState(POWER_SOURCES[0]?.id ?? "");
   const [loadMode, setLoadMode] = useState("standby");
+  const [accessoryCategory, setAccessoryCategory] = useState("Video");
 
   useEffect(() => {
     // Auto-set voltage only when it clearly matches the selected source
@@ -902,6 +978,10 @@ export default function PowerVibe() {
   const [showCamList, setShowCamList] = useState(false);
   const [showAccList, setShowAccList] = useState(false);
   const [showBattList, setShowBattList] = useState(false);
+  const [showMdrConfig, setShowMdrConfig] = useState(false);
+  const [pendingMdr, setPendingMdr] = useState(null);
+  const [mdrMotors, setMdrMotors] = useState(3);
+  const [mdrIncludeLR, setMdrIncludeLR] = useState(false);
 
   // Computations
   const totalWatts = useMemo(
@@ -1014,6 +1094,11 @@ export default function PowerVibe() {
     }
     return acc;
   }, []);
+  const filteredAccessories = useMemo(() => {
+    return PRESETS.accessories.filter(
+      (a) => (a.category || "Other") === accessoryCategory
+    );
+  }, [accessoryCategory]);
 
   return (
     <div className="min-h-screen w-full bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 p-4 sm:p-6">
@@ -1088,6 +1173,18 @@ export default function PowerVibe() {
           {/* Accessories dropdown */}
           <div>
             <label className="block text-sm mb-1 font-medium">Add Accessory</label>
+            <div className="mb-2">
+              <label className="block text-sm mb-1 font-medium">Accessory group</label>
+              <select
+                className={selectClass + " w-full"}
+                value={accessoryCategory}
+                onChange={(e) => setAccessoryCategory(e.target.value)}
+              >
+                <option value="Video">Video (monitors / transmitters)</option>
+                <option value="Lens Control">Lens Control (MDR / motors / focus)</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
             <div className="flex gap-2 items-center">
               <div className={selectWrap}>
                 <select
@@ -1097,14 +1194,23 @@ export default function PowerVibe() {
                     const val = e.target.value;
                     if (val) {
                       const preset = PRESETS.accessories.find((a) => a.name === val);
-                      if (preset) addDevice(preset.name, preset.watts);
+                      if (preset) {
+                        if (preset.name === "Preston MDR-4") {
+                          setPendingMdr(preset);
+                          setMdrMotors(3);
+                          setMdrIncludeLR(false);
+                          setShowMdrConfig(true);
+                        } else {
+                          addDevice(preset.name, preset.watts);
+                        }
+                      }
                       e.currentTarget.selectedIndex = 0;
                     }
                   }}
                   size={accessorySelectSize}
                 >
                   <option value="">Select accessory…</option>
-                  {PRESETS.accessories.map((a) => (
+                  {filteredAccessories.map((a) => (
                     <option key={a.name} value={a.name}>{`${a.name} (${a.watts}W)`}</option>
                   ))}
                 </select>
@@ -1537,8 +1643,16 @@ Always verify on set.`}
                             : ""
                         }`}
                         onClick={() => {
-                          addDevice(a.name, a.watts);
-                          setShowAccList(false);
+                          if (a.name === "Preston MDR-4") {
+                            setPendingMdr(a);
+                            setMdrMotors(3);
+                            setMdrIncludeLR(false);
+                            setShowMdrConfig(true);
+                            setShowAccList(false);
+                          } else {
+                            addDevice(a.name, a.watts);
+                            setShowAccList(false);
+                          }
                         }}
                       >
                         <div className="flex flex-col items-start">
@@ -1559,6 +1673,77 @@ Always verify on set.`}
                   </div>
                 ))}
               </div>
+            </div>
+          </div>
+        )}
+
+        {showMdrConfig && pendingMdr && (
+          <div
+            className="fixed inset-0 bg-black/40 z-50"
+            onClick={() => {
+              setShowMdrConfig(false);
+              setPendingMdr(null);
+            }}
+          >
+            <div
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-md rounded-2xl bg-white dark:bg-neutral-900 p-4 border dark:border-neutral-800"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold">Configure {pendingMdr.name}</h3>
+                <button
+                  className="px-3 py-1 border rounded-xl text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  onClick={() => {
+                    setShowMdrConfig(false);
+                    setPendingMdr(null);
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+
+              <label className="block text-sm mb-1">Number of motors</label>
+              <select
+                className={selectClass + " w-full mb-3"}
+                value={mdrMotors}
+                onChange={(e) => setMdrMotors(Number(e.target.value))}
+              >
+                {[1, 2, 3, 4].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+
+              <label className="flex items-center gap-2 text-sm mb-4">
+                <input
+                  type="checkbox"
+                  checked={mdrIncludeLR}
+                  onChange={(e) => setMdrIncludeLR(e.target.checked)}
+                />
+                Include Light Ranger 2
+              </label>
+
+              <button
+                className="w-full px-3 py-2 rounded-xl bg-black text-white hover:opacity-90 dark:bg-white dark:text-black"
+                onClick={() => {
+                  addDevice(pendingMdr.name, pendingMdr.watts);
+                  const perMotorW = 6;
+                  addDevice(`Preston Motors ×${mdrMotors} (typical)`, perMotorW * mdrMotors);
+
+                  if (mdrIncludeLR) addDevice("Preston Light Ranger 2", 3.5);
+
+                  setShowMdrConfig(false);
+                  setPendingMdr(null);
+                }}
+              >
+                Add to build
+              </button>
+
+              <p className="mt-3 text-xs text-neutral-500 dark:text-neutral-400">
+                Motors are added as a single combined “typical” line to avoid stacking peak
+                values.
+              </p>
             </div>
           </div>
         )}
