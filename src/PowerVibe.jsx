@@ -766,20 +766,17 @@ function parseNum(v) {
   return Number.isFinite(n) ? n : undefined;
 }
 function devicePowerW(d, loadMode = "standby") {
-  if (d && (d.watts_standby !== undefined || d.watts_strained !== undefined)) {
-    const ws = parseNum(d.watts_standby);
-    const wq = parseNum(d.watts_strained);
-    const picked = loadMode === "strained" ? wq : ws;
-    if (picked !== undefined && picked > 0) return picked;
-    const fallback = ws ?? wq;
-    if (fallback !== undefined && fallback > 0) return fallback;
+  if (d?.kind === "camera" || d?.watts_standby != null || d?.watts_strained != null) {
+    const w =
+      loadMode === "strained" ? parseNum(d.watts_strained) : parseNum(d.watts_standby);
+    return w ?? 0;
   }
   const W = parseNum(d.watts);
   if (W !== undefined && W > 0) return W;
   const V = parseNum(d.volts);
   const A = parseNum(d.amps);
   if (V !== undefined && A !== undefined) return V * A;
-  return undefined;
+  return 0;
 }
 function whFromVAh(volts, ampHours) {
   if (volts === undefined || ampHours === undefined) return undefined;
