@@ -16,7 +16,7 @@ const PRESETS = {
     { name: "ARRI Alexa Mini LF", watts_standby: 85, watts_strained: 95 },
     { name: "ARRI Alexa Mini", watts_standby: 80, watts_strained: 90 },
     { name: "Sony Venice 2", watts_standby: 65, watts_strained: 85 },
-    { name: "Sony FX9", watts_standby: 55, watts_strained: 65 },
+    { name: "Sony FX9", watts_standby: 35, watts_strained: 55 },
     { name: "Canon C500 MkII", watts_standby: 45, watts_strained: 60 },
     { name: "RED Komodo", watts_standby: 35, watts_strained: 45 },
     { name: "RED V-Raptor", watts_standby: 80, watts_strained: 95 },
