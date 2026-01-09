@@ -443,7 +443,13 @@ const PRESETS = {
     { name: "Movmax Hurricane Rain Deflector", watts: 24, brand: "Movmax", category: "Other" },
 
     // Stabilisation
-    { name: "DJI Ronin 2", watts: 60, brand: "DJI", category: "Other", common: true },
+    {
+      name: "DJI Ronin 2 (Gimbal overhead)",
+      watts: 60,
+      brand: "DJI",
+      category: "Other",
+      common: true,
+    },
     { name: "DJI Ronin 2 (Gimbal Only)", watts: 40, brand: "DJI", category: "Other" },
     { name: "Freefly Movi Pro (System)", watts: 50, brand: "Freefly", category: "Other" },
   ],
@@ -766,15 +772,17 @@ function parseNum(v) {
   return Number.isFinite(n) ? n : undefined;
 }
 function devicePowerW(d, loadMode = "standby") {
-  if (d?.kind === "camera" || d?.watts_standby != null || d?.watts_strained != null) {
+  if (d && (d.kind === "camera" || d.watts_standby != null || d.watts_strained != null)) {
     const w =
-      loadMode === "strained" ? parseNum(d.watts_strained) : parseNum(d.watts_standby);
+      loadMode === "strained"
+        ? parseNum(d.watts_strained)
+        : parseNum(d.watts_standby);
     return w ?? 0;
   }
-  const W = parseNum(d.watts);
+  const W = parseNum(d?.watts);
   if (W !== undefined && W > 0) return W;
-  const V = parseNum(d.volts);
-  const A = parseNum(d.amps);
+  const V = parseNum(d?.volts);
+  const A = parseNum(d?.amps);
   if (V !== undefined && A !== undefined) return V * A;
   return 0;
 }
@@ -1007,7 +1015,7 @@ export default function PowerVibe() {
 
   // Computations
   const totalWatts = useMemo(
-    () => devices.reduce((sum, d) => sum + (devicePowerW(d, loadMode) ?? 0), 0),
+    () => devices.reduce((sum, d) => sum + devicePowerW(d, loadMode), 0),
     [devices, loadMode]
   );
   const systemV = useMemo(() => parseNum(batteryV) ?? 14.4, [batteryV]);
