@@ -1090,6 +1090,25 @@ export default function PowerVibe() {
       },
     ]);
   }
+  function applyRonin2Preset() {
+    // Set the multi-battery power system
+    setPowerSystem("ronin2-tb50");
+
+    // Add Ronin overhead once (avoid duplicates)
+    setDevices((prev) => {
+      const roninName = "DJI Ronin 2 (Gimbal + power distro overhead)";
+      if (prev.some((d) => d.name === roninName)) return prev;
+      return [
+        ...prev,
+        {
+          id: uid(),
+          name: roninName,
+          watts: 60,
+          brand: "DJI",
+        },
+      ];
+    });
+  }
 
   // Shared input/select classes
   const inputClass =
@@ -1165,6 +1184,32 @@ export default function PowerVibe() {
 
         {/* Preset pickers */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          {/* Build presets */}
+          <div className="mb-4 md:col-span-2">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm font-medium">Build presets</div>
+                <div className="text-xs text-neutral-600 dark:text-neutral-400">
+                  Quick start — sets the power system and adds gimbal overhead.
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={applyRonin2Preset}
+                className="px-4 py-2 rounded-xl bg-neutral-900 text-white hover:opacity-90 dark:bg-white dark:text-black text-sm font-medium shadow-sm"
+              >
+                Ronin 2 build
+              </button>
+            </div>
+
+            {powerSystem === "ronin2-tb50" && (
+              <div className="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+                Tip: Add Ronin overhead only if Ronin batteries are powering the camera and
+                accessories.
+              </div>
+            )}
+          </div>
           {/* Camera dropdown */}
           <div>
             <label className="block text-sm mb-1 font-medium">Add Camera Body</label>
