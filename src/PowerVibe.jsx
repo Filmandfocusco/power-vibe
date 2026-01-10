@@ -1483,6 +1483,11 @@ export default function PowerVibe() {
                     ))}
                   </select>
                 </div>
+                {powerSystem === "ronin2-tb50" && (
+                  <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                    Add Ronin overhead only if Ronin batteries are powering the rig.
+                  </p>
+                )}
               </div>
               <p className="col-span-12 text-xs text-neutral-500 dark:text-neutral-400">
                 Select a preset to auto-fill values, or choose <em>Custom</em> and enter Wh
