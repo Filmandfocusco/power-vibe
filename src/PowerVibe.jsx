@@ -1269,6 +1269,9 @@ export default function PowerVibe() {
             <div className="col-span-3 text-right">Actions</div>
           </div>
           {devices.map((d) => {
+            const isCamera =
+              d.kind === "camera" || d.watts_standby != null || d.watts_strained != null;
+            const displayW = isCamera ? devicePowerW(d, loadMode) : parseNum(d.watts);
             const W = devicePowerW(d);
             return (
               <div
@@ -1296,14 +1299,16 @@ export default function PowerVibe() {
                 <div className="col-span-3">
                   <div className="flex items-center rounded-xl border dark:border-neutral-700 px-2 py-1.5 bg-white dark:bg-neutral-900 overflow-hidden focus-within:ring-2 focus-within:ring-sky-400/60 transition">
                     <input
-                      value={d.watts ?? ""}
-                      onChange={(e) =>
+                      value={isCamera ? displayW.toFixed(1) : d.watts ?? ""}
+                      onChange={(e) => {
+                        if (isCamera) return;
                         setDevices(
                           devices.map((x) =>
                             x.id === d.id ? { ...x, watts: e.target.value } : x
                           )
-                        )
-                      }
+                        );
+                      }}
+                      readOnly={isCamera}
                       className="w-full flex-1 text-right text-sm font-semibold text-neutral-800 dark:text-neutral-100 tabular-nums tracking-tight outline-none bg-transparent border-0 p-0"
                       placeholder="0.0"
                       type="text"
@@ -1311,6 +1316,11 @@ export default function PowerVibe() {
                       pattern="[0-9]*[.,]?[0-9]*"
                     />
                   </div>
+                  {isCamera && (
+                    <div className="mt-1 text-[10px] text-neutral-500 dark:text-neutral-400 text-right">
+                      Standby/Strained range
+                    </div>
+                  )}
                 </div>
                 <div className="col-span-3 flex items-center justify-end gap-2">
                   <div className="hidden md:block min-w-[84px] text-right text-xs tabular-nums text-neutral-500 dark:text-neutral-400">
