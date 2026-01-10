@@ -747,6 +747,7 @@ const POWER_SOURCES = [
   { id: "onboard-26", label: "Onboard 26V battery (plate)", volts: 26, contA: 12, peakA: 20 },
   { id: "block-14", label: "Block battery 14V", volts: 14.4, contA: 20, peakA: 30 },
   { id: "block-26", label: "Block battery 26V", volts: 26, contA: 16, peakA: 24 },
+  { id: "steadicam", label: "Steadicam sled / distro (14V)", volts: 14.4, contA: 20, peakA: 30 },
   { id: "ronin2", label: "Ronin 2 internal power", volts: 24, contA: 15, peakA: 25 },
   { id: "psu", label: "AC PSU / mains", volts: 14.4, contA: 30, peakA: 40 },
 ];
@@ -759,6 +760,14 @@ const POWER_SYSTEMS = [
     totalWh: 194,
     volts: 24,
     notes: "Uses Ronin 2 internal battery system (2× TB50). Batteries are load-shared & hot-swappable.",
+  },
+  {
+    id: "steadicam",
+    label: "Steadicam (multi-battery sled)",
+    totalWh: null,
+    volts: 14.4,
+    notes:
+      "Assumes batteries are used sequentially (swap as you go). Actual results depend on sled wiring, distro, and load balancing.",
   },
 ];
 
@@ -979,6 +988,11 @@ export default function PowerVibe() {
   const [loadMode, setLoadMode] = useState("standby");
   const [accessoryCategory, setAccessoryCategory] = useState("Video");
   const [powerSystem, setPowerSystem] = useState("none");
+  const [showSteadiPreset, setShowSteadiPreset] = useState(false);
+  const [steadiCount, setSteadiCount] = useState(3);
+  const [steadiBatteryLabel, setSteadiBatteryLabel] = useState(
+    "IDX Endura CUE-D150 – 146Wh (14.4V)"
+  );
 
   useEffect(() => {
     // Auto-set voltage only when it clearly matches the selected source
@@ -994,10 +1008,12 @@ export default function PowerVibe() {
     const ps = POWER_SYSTEMS.find((system) => system.id === powerSystem);
     if (!ps || ps.id === "none") return;
 
-    setBatteryWh(String(ps.totalWh));
-    setBatteryV(String(ps.volts));
-    setBatteryAh("");
-    setBatteryPreset("");
+    if (ps.totalWh !== null && ps.totalWh !== undefined) {
+      setBatteryWh(String(ps.totalWh));
+      setBatteryV(String(ps.volts));
+      setBatteryAh("");
+      setBatteryPreset("");
+    }
 
     if (ps.id === "ronin2-tb50") setPowerSource("ronin2");
   }, [powerSystem]);
@@ -1109,6 +1125,21 @@ export default function PowerVibe() {
       ];
     });
   }
+  function applySteadicamPreset() {
+    setPowerSystem("steadicam");
+    setPowerSource("steadicam");
+
+    const preset = BATTERY_PRESETS.find((item) => item.label === steadiBatteryLabel);
+    if (preset) {
+      const totalWh = Number(preset.wh) * Number(steadiCount || 1);
+      setBatteryWh(String(totalWh));
+      setBatteryV(String(preset.volts || 14.4));
+      setBatteryAh("");
+      setBatteryPreset("");
+    }
+
+    setShowSteadiPreset(false);
+  }
 
   // Shared input/select classes
   const inputClass =
@@ -1194,13 +1225,22 @@ export default function PowerVibe() {
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={applyRonin2Preset}
-                className="px-4 py-2 rounded-xl bg-neutral-900 text-white hover:opacity-90 dark:bg-white dark:text-black text-sm font-medium shadow-sm"
-              >
-                Ronin 2 build
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={applyRonin2Preset}
+                  className="px-4 py-2 rounded-xl bg-neutral-900 text-white hover:opacity-90 dark:bg-white dark:text-black text-sm font-medium shadow-sm"
+                >
+                  Ronin 2 build
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowSteadiPreset(true)}
+                  className="px-4 py-2 rounded-xl border hover:bg-neutral-100 dark:hover:bg-neutral-800 text-sm font-medium"
+                >
+                  Steadicam build
+                </button>
+              </div>
             </div>
 
             {powerSystem === "ronin2-tb50" && (
@@ -1861,6 +1901,66 @@ Always verify on set.`}
                 Motors are added as a single combined “typical” line to avoid stacking peak
                 values.
               </p>
+            </div>
+          </div>
+        )}
+
+        {showSteadiPreset && (
+          <div
+            className="fixed inset-0 bg-black/40 z-50"
+            onClick={() => setShowSteadiPreset(false)}
+          >
+            <div
+              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[92vw] max-w-md rounded-2xl bg-white dark:bg-neutral-900 p-4 border dark:border-neutral-800"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold">Steadicam preset</h3>
+                <button
+                  className="px-3 py-1 border rounded-xl text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                  onClick={() => setShowSteadiPreset(false)}
+                >
+                  Close
+                </button>
+              </div>
+
+              <label className="block text-sm mb-1">Battery type</label>
+              <select
+                className={selectClass + " w-full mb-3"}
+                value={steadiBatteryLabel}
+                onChange={(e) => setSteadiBatteryLabel(e.target.value)}
+              >
+                {BATTERY_PRESETS.filter((b) => (b.volts ?? 14.4) < 20).map((b) => (
+                  <option key={b.label} value={b.label}>
+                    {b.label}
+                  </option>
+                ))}
+              </select>
+
+              <label className="block text-sm mb-1">Number of batteries</label>
+              <select
+                className={selectClass + " w-full mb-3"}
+                value={steadiCount}
+                onChange={(e) => setSteadiCount(Number(e.target.value))}
+              >
+                {[2, 3, 4, 5].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+
+              <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-4">
+                Assumes batteries are used sequentially (swap as you go). Runtime varies by
+                sled wiring & distro.
+              </p>
+
+              <button
+                className="w-full px-3 py-2 rounded-xl bg-black text-white hover:opacity-90 dark:bg-white dark:text-black"
+                onClick={applySteadicamPreset}
+              >
+                Apply Steadicam preset
+              </button>
             </div>
           </div>
         )}
