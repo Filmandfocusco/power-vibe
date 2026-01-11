@@ -1010,18 +1010,17 @@ export default function PowerVibe() {
     const ps = POWER_SYSTEMS.find((system) => system.id === powerSystem);
     if (!ps || ps.id === "none") return;
 
-    if (ps.volts != null) {
-      setBatteryV(String(ps.volts));
-    }
+    // Always set voltage domain if provided
+    if (ps.volts != null) setBatteryV(String(ps.volts));
 
-    if (ps.totalWh == null) {
-      setBatteryWh("");
-      setBatteryAh("");
-      setBatteryPreset("");
-    }
-
+    // If system has fixed totalWh (Ronin etc), lock in values
     if (ps.totalWh != null) {
       setBatteryWh(String(ps.totalWh));
+      setBatteryAh("");
+      setBatteryPreset("");
+    } else {
+      // Systems like Steadicam: clear stale values so user isn't misled
+      setBatteryWh("");
       setBatteryAh("");
       setBatteryPreset("");
     }
@@ -1191,6 +1190,10 @@ export default function PowerVibe() {
     [powerSystem]
   );
   const isSystemLocked = powerSystem !== "none" && selectedPowerSystem?.totalWh != null;
+  const isSteadicamSystem = powerSystem === "steadicam";
+  const powerSystemLabel =
+    POWER_SYSTEMS.find((s) => s.id === powerSystem)?.label ||
+    "Standard (single battery / block)";
   const filteredAccessories = useMemo(() => {
     return PRESETS.accessories.filter(
       (a) => (a.category || "Other") === accessoryCategory
@@ -1478,6 +1481,21 @@ export default function PowerVibe() {
                     </option>
                   ))}
                 </select>
+                {isSteadicamSystem && (
+                  <div className="mt-2 flex items-start justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50/60 px-3 py-2 text-xs text-neutral-700 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-neutral-200">
+                    <div className="leading-4">
+                      Steadicam assumes multiple batteries. Use the preset to set
+                      battery type + count (e.g. 3× IDX).
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowSteadiPreset(true)}
+                      className="shrink-0 rounded-lg bg-neutral-900 px-2 py-1 text-white hover:opacity-90 dark:bg-white dark:text-black"
+                    >
+                      Open preset
+                    </button>
+                  </div>
+                )}
                 <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
                   Choose this for rigs with dedicated multi-battery power (e.g. Ronin 2).
                 </p>
@@ -1697,6 +1715,11 @@ export default function PowerVibe() {
                 {warning}
               </div>
             )}
+            <div className="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+              Power system: <span className="font-medium">{powerSystemLabel}</span> ·{" "}
+              {(systemV ?? 14.4).toFixed(1)}V domain · Derate{" "}
+              {Math.min(Math.max(parseNum(deratePct) ?? 10, 0), 50)}%
+            </div>
             {recommend26V && (
               <div className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
                 💡 Tip: This load is easier to run on{" "}
