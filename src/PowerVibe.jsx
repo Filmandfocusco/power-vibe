@@ -1005,6 +1005,14 @@ export default function PowerVibe() {
     "";
   const [steadiBatteryLabel, setSteadiBatteryLabel] = useState(defaultSteadiBattery);
 
+  // Steadicam preset modal state
+  const [showSteadiPreset, setShowSteadiPreset] = useState(false);
+  const [steadiCount, setSteadiCount] = useState(3);
+  const [steadiBatteryLabel, setSteadiBatteryLabel] = useState(() => {
+    const first14v = BATTERY_PRESETS.find((b) => (b.volts ?? 14.4) < 20);
+    return first14v?.label || "";
+  });
+
   useEffect(() => {
     // Auto-set voltage only when it clearly matches the selected source
     if (powerSource === "block-26" || powerSource === "onboard-26") {
