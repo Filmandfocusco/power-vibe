@@ -994,6 +994,17 @@ export default function PowerVibe() {
     "IDX Endura CUE-D150 – 146Wh (14.4V)"
   );
 
+  // Steadicam preset modal state
+  const [showSteadiPreset, setShowSteadiPreset] = useState(false);
+  const [steadiCount, setSteadiCount] = useState(3);
+  const defaultSteadiBattery =
+    (BATTERY_PRESETS.find(
+      (b) => (b.volts ?? 14.4) < 20 && String(b.wh).includes("146")
+    )?.label) ||
+    (BATTERY_PRESETS.find((b) => (b.volts ?? 14.4) < 20)?.label) ||
+    "";
+  const [steadiBatteryLabel, setSteadiBatteryLabel] = useState(defaultSteadiBattery);
+
   useEffect(() => {
     // Auto-set voltage only when it clearly matches the selected source
     if (powerSource === "block-26" || powerSource === "onboard-26") {
@@ -1008,14 +1019,24 @@ export default function PowerVibe() {
     const ps = POWER_SYSTEMS.find((system) => system.id === powerSystem);
     if (!ps || ps.id === "none") return;
 
-    if (ps.totalWh !== null && ps.totalWh !== undefined) {
-      setBatteryWh(String(ps.totalWh));
+    if (ps.volts != null) {
       setBatteryV(String(ps.volts));
+    }
+
+    if (ps.totalWh == null) {
+      setBatteryWh("");
+      setBatteryAh("");
+      setBatteryPreset("");
+    }
+
+    if (ps.totalWh != null) {
+      setBatteryWh(String(ps.totalWh));
       setBatteryAh("");
       setBatteryPreset("");
     }
 
     if (ps.id === "ronin2-tb50") setPowerSource("ronin2");
+    if (ps.id === "steadicam") setPowerSource("steadicam");
   }, [powerSystem]);
 
   // iOS-friendly picker state
@@ -1174,7 +1195,11 @@ export default function PowerVibe() {
     }
     return acc;
   }, []);
-  const isSystemLocked = powerSystem !== "none";
+  const selectedPowerSystem = useMemo(
+    () => POWER_SYSTEMS.find((system) => system.id === powerSystem),
+    [powerSystem]
+  );
+  const isSystemLocked = powerSystem !== "none" && selectedPowerSystem?.totalWh != null;
   const filteredAccessories = useMemo(() => {
     return PRESETS.accessories.filter(
       (a) => (a.category || "Other") === accessoryCategory
@@ -1247,6 +1272,12 @@ export default function PowerVibe() {
               <div className="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
                 Tip: Add Ronin overhead only if Ronin batteries are powering the camera and
                 accessories.
+              </div>
+            )}
+            {powerSystem === "steadicam" && (
+              <div className="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+                Tip: Steadicam runtime assumes batteries are swapped sequentially. Actual
+                results depend on sled wiring/distro.
               </div>
             )}
           </div>
@@ -1924,7 +1955,7 @@ Always verify on set.`}
                 </button>
               </div>
 
-              <label className="block text-sm mb-1">Battery type</label>
+              <label className="block text-sm mb-1">Battery type (14V)</label>
               <select
                 className={selectClass + " w-full mb-3"}
                 value={steadiBatteryLabel}
