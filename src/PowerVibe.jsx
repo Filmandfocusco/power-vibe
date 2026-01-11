@@ -1014,14 +1014,24 @@ export default function PowerVibe() {
     const ps = POWER_SYSTEMS.find((system) => system.id === powerSystem);
     if (!ps || ps.id === "none") return;
 
-    if (ps.totalWh !== null && ps.totalWh !== undefined) {
-      setBatteryWh(String(ps.totalWh));
+    if (ps.volts != null) {
       setBatteryV(String(ps.volts));
+    }
+
+    if (ps.totalWh == null) {
+      setBatteryWh("");
+      setBatteryAh("");
+      setBatteryPreset("");
+    }
+
+    if (ps.totalWh != null) {
+      setBatteryWh(String(ps.totalWh));
       setBatteryAh("");
       setBatteryPreset("");
     }
 
     if (ps.id === "ronin2-tb50") setPowerSource("ronin2");
+    if (ps.id === "steadicam") setPowerSource("steadicam");
   }, [powerSystem]);
 
   // iOS-friendly picker state
@@ -1180,7 +1190,11 @@ export default function PowerVibe() {
     }
     return acc;
   }, []);
-  const isSystemLocked = powerSystem !== "none";
+  const selectedPowerSystem = useMemo(
+    () => POWER_SYSTEMS.find((system) => system.id === powerSystem),
+    [powerSystem]
+  );
+  const isSystemLocked = powerSystem !== "none" && selectedPowerSystem?.totalWh != null;
   const filteredAccessories = useMemo(() => {
     return PRESETS.accessories.filter(
       (a) => (a.category || "Other") === accessoryCategory
