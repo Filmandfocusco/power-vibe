@@ -1515,6 +1515,21 @@ export default function PowerVibe() {
                     </button>
                   </div>
                 )}
+                {powerSystem === "steadicam" && (parseNum(batteryWh) ?? 0) <= 0 && (
+                  <div className="mt-2 flex items-start justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50/60 px-3 py-2 text-xs text-neutral-700 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-neutral-200">
+                    <div className="leading-4">
+                      Steadicam needs total battery energy (e.g. 3× 146Wh = 438Wh).
+                      Use the preset or enter total Wh manually.
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowSteadiPreset(true)}
+                      className="shrink-0 rounded-lg bg-neutral-900 px-2 py-1 text-white hover:opacity-90 dark:bg-white dark:text-black"
+                    >
+                      Open preset
+                    </button>
+                  </div>
+                )}
                 <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
                   Choose this for rigs with dedicated multi-battery power (e.g. Ronin 2).
                 </p>
@@ -1760,9 +1775,16 @@ export default function PowerVibe() {
           <div className={`rounded-2xl shadow-sm border p-4 bg-gradient-to-br from-sky-50 to-indigo-50 border-sky-200 ${isDark ? "text-neutral-900" : ""}`}>
             <h3 className="font-semibold mb-2">Estimated Runtime</h3>
             <BatteryBar hours={hours} />
-            <div className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-              Based on {(computedWh || 0).toFixed(0)} Wh and {totalWatts.toFixed(1)} W
-            </div>
+            {computedWh <= 0 ? (
+              <div className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                Add a battery (Wh) to see runtime — Steadicam presets can auto-calc total
+                Wh.
+              </div>
+            ) : (
+              <div className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                Based on {(computedWh || 0).toFixed(0)} Wh and {totalWatts.toFixed(1)} W
+              </div>
+            )}
           </div>
 
           <div className="rounded-2xl shadow-sm border p-4 bg-gradient-to-br from-neutral-50 to-zinc-50 border-neutral-200 dark:from-neutral-900/30 dark:to-zinc-900/20 dark:border-neutral-800">
