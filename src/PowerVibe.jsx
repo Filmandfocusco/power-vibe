@@ -988,23 +988,6 @@ export default function PowerVibe() {
   const [loadMode, setLoadMode] = useState("standby");
   const [accessoryCategory, setAccessoryCategory] = useState("Video");
   const [powerSystem, setPowerSystem] = useState("none");
-  const [showSteadiPreset, setShowSteadiPreset] = useState(false);
-  const [steadiCount, setSteadiCount] = useState(3);
-  const [steadiBatteryLabel, setSteadiBatteryLabel] = useState(
-    "IDX Endura CUE-D150 – 146Wh (14.4V)"
-  );
-
-  // Steadicam preset modal state
-  const [showSteadiPreset, setShowSteadiPreset] = useState(false);
-  const [steadiCount, setSteadiCount] = useState(3);
-  const defaultSteadiBattery =
-    (BATTERY_PRESETS.find(
-      (b) => (b.volts ?? 14.4) < 20 && String(b.wh).includes("146")
-    )?.label) ||
-    (BATTERY_PRESETS.find((b) => (b.volts ?? 14.4) < 20)?.label) ||
-    "";
-  const [steadiBatteryLabel, setSteadiBatteryLabel] = useState(defaultSteadiBattery);
-
   // Steadicam preset modal state
   const [showSteadiPreset, setShowSteadiPreset] = useState(false);
   const [steadiCount, setSteadiCount] = useState(3);
