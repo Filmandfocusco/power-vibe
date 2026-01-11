@@ -747,7 +747,20 @@ const POWER_SOURCES = [
   { id: "onboard-26", label: "Onboard 26V battery (plate)", volts: 26, contA: 12, peakA: 20 },
   { id: "block-14", label: "Block battery 14V", volts: 14.4, contA: 20, peakA: 30 },
   { id: "block-26", label: "Block battery 26V", volts: 26, contA: 16, peakA: 24 },
-  { id: "steadicam", label: "Steadicam sled / distro (14V)", volts: 14.4, contA: 20, peakA: 30 },
+  {
+    id: "steadicam-seq",
+    label: "Steadicam sled (sequential / swap)",
+    volts: 14.4,
+    contA: 20,
+    peakA: 30,
+  },
+  {
+    id: "steadicam-par",
+    label: "Steadicam sled (parallel / load-share)",
+    volts: 14.4,
+    contA: 35,
+    peakA: 55,
+  },
   { id: "ronin2", label: "Ronin 2 internal power", volts: 24, contA: 15, peakA: 25 },
   { id: "psu", label: "AC PSU / mains", volts: 14.4, contA: 30, peakA: 40 },
 ];
@@ -991,6 +1004,8 @@ export default function PowerVibe() {
   // Steadicam preset modal state
   const [showSteadiPreset, setShowSteadiPreset] = useState(false);
   const [steadiCount, setSteadiCount] = useState(3);
+  const [steadiWiring, setSteadiWiring] = useState("sequential"); // "sequential" | "parallel"
+  const [showSteadiAdvanced, setShowSteadiAdvanced] = useState(false);
   const [steadiBatteryLabel, setSteadiBatteryLabel] = useState(() => {
     const first14v = BATTERY_PRESETS.find((b) => (b.volts ?? 14.4) < 20);
     return first14v?.label || "";
@@ -1026,8 +1041,12 @@ export default function PowerVibe() {
     }
 
     if (ps.id === "ronin2-tb50") setPowerSource("ronin2");
-    if (ps.id === "steadicam") setPowerSource("steadicam");
   }, [powerSystem]);
+
+  useEffect(() => {
+    if (powerSystem !== "steadicam") return;
+    setPowerSource(steadiWiring === "parallel" ? "steadicam-par" : "steadicam-seq");
+  }, [powerSystem, steadiWiring]);
 
   // iOS-friendly picker state
   const isIOS =
@@ -1138,7 +1157,7 @@ export default function PowerVibe() {
   }
   function applySteadicamPreset() {
     setPowerSystem("steadicam");
-    setPowerSource("steadicam");
+    setPowerSource(steadiWiring === "parallel" ? "steadicam-par" : "steadicam-seq");
 
     const preset = BATTERY_PRESETS.find((item) => item.label === steadiBatteryLabel);
     if (preset) {
@@ -1719,6 +1738,15 @@ export default function PowerVibe() {
               Power system: <span className="font-medium">{powerSystemLabel}</span> ·{" "}
               {(systemV ?? 14.4).toFixed(1)}V domain · Derate{" "}
               {Math.min(Math.max(parseNum(deratePct) ?? 10, 0), 50)}%
+              {powerSystem === "steadicam" && (
+                <>
+                  {" "}
+                  · Mode:{" "}
+                  <span className="font-medium">
+                    {steadiWiring === "parallel" ? "Parallel" : "Sequential"}
+                  </span>
+                </>
+              )}
             </div>
             {recommend26V && (
               <div className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
@@ -1999,6 +2027,54 @@ Always verify on set.`}
                 Assumes batteries are used sequentially (swap as you go). Runtime varies by
                 sled wiring & distro.
               </p>
+
+              <div className="mb-3">
+                <button
+                  type="button"
+                  onClick={() => setShowSteadiAdvanced((v) => !v)}
+                  className="text-xs underline underline-offset-2 text-neutral-700 dark:text-neutral-300 hover:opacity-80"
+                >
+                  {showSteadiAdvanced ? "Hide advanced" : "Show advanced"}
+                </button>
+
+                {showSteadiAdvanced && (
+                  <div className="mt-2 rounded-xl border dark:border-neutral-800 p-3">
+                    <div className="text-xs font-medium mb-2">
+                      Wiring / usage assumption
+                    </div>
+
+                    <div className="flex flex-col gap-2 text-xs text-neutral-700 dark:text-neutral-300">
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="steadiWiring"
+                          value="sequential"
+                          checked={steadiWiring === "sequential"}
+                          onChange={() => setSteadiWiring("sequential")}
+                        />
+                        Sequential (swap as you go) — most common
+                      </label>
+
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="steadiWiring"
+                          value="parallel"
+                          checked={steadiWiring === "parallel"}
+                          onChange={() => setSteadiWiring("parallel")}
+                        />
+                        Parallel / load-share — increases current headroom (runtime
+                        unchanged)
+                      </label>
+                    </div>
+
+                    <p className="mt-2 text-[11px] text-neutral-600 dark:text-neutral-400 leading-4">
+                      Runtime is based on total Wh (energy). Parallel wiring mainly affects
+                      peak current headroom and connector/distro warnings.
+                    </p>
+                  </div>
+                )}
+              </div>
 
               <button
                 className="w-full px-3 py-2 rounded-xl bg-black text-white hover:opacity-90 dark:bg-white dark:text-black"
