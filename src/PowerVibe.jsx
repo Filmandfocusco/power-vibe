@@ -747,7 +747,20 @@ const POWER_SOURCES = [
   { id: "onboard-26", label: "Onboard 26V battery (plate)", volts: 26, contA: 12, peakA: 20 },
   { id: "block-14", label: "Block battery 14V", volts: 14.4, contA: 20, peakA: 30 },
   { id: "block-26", label: "Block battery 26V", volts: 26, contA: 16, peakA: 24 },
-  { id: "steadicam", label: "Steadicam sled / distro (14V)", volts: 14.4, contA: 20, peakA: 30 },
+  {
+    id: "steadicam-seq",
+    label: "Steadicam sled (sequential / swap)",
+    volts: 14.4,
+    contA: 20,
+    peakA: 30,
+  },
+  {
+    id: "steadicam-par",
+    label: "Steadicam sled (parallel / load-share)",
+    volts: 14.4,
+    contA: 35,
+    peakA: 55,
+  },
   { id: "ronin2", label: "Ronin 2 internal power", volts: 24, contA: 15, peakA: 25 },
   { id: "psu", label: "AC PSU / mains", volts: 14.4, contA: 30, peakA: 40 },
 ];
@@ -991,6 +1004,8 @@ export default function PowerVibe() {
   // Steadicam preset modal state
   const [showSteadiPreset, setShowSteadiPreset] = useState(false);
   const [steadiCount, setSteadiCount] = useState(3);
+  const [steadiWiring, setSteadiWiring] = useState("sequential"); // "sequential" | "parallel"
+  const [showSteadiAdvanced, setShowSteadiAdvanced] = useState(false);
   const [steadiBatteryLabel, setSteadiBatteryLabel] = useState(() => {
     const first14v = BATTERY_PRESETS.find((b) => (b.volts ?? 14.4) < 20);
     return first14v?.label || "";
@@ -1010,24 +1025,34 @@ export default function PowerVibe() {
     const ps = POWER_SYSTEMS.find((system) => system.id === powerSystem);
     if (!ps || ps.id === "none") return;
 
-    if (ps.volts != null) {
-      setBatteryV(String(ps.volts));
-    }
+    // Always set voltage domain if provided
+    if (ps.volts != null) setBatteryV(String(ps.volts));
 
-    if (ps.totalWh == null) {
+    // If system has fixed totalWh (Ronin etc), lock in values
+    if (ps.totalWh != null) {
+      setBatteryWh(String(ps.totalWh));
+      setBatteryAh("");
+      setBatteryPreset("");
+    } else {
+      // Systems like Steadicam: clear stale values so user isn't misled
       setBatteryWh("");
       setBatteryAh("");
       setBatteryPreset("");
     }
 
-    if (ps.totalWh != null) {
-      setBatteryWh(String(ps.totalWh));
-      setBatteryAh("");
-      setBatteryPreset("");
-    }
-
     if (ps.id === "ronin2-tb50") setPowerSource("ronin2");
-    if (ps.id === "steadicam") setPowerSource("steadicam");
+  }, [powerSystem]);
+
+  useEffect(() => {
+    if (powerSystem !== "steadicam") return;
+    setPowerSource(steadiWiring === "parallel" ? "steadicam-par" : "steadicam-seq");
+  }, [powerSystem, steadiWiring]);
+
+  useEffect(() => {
+    if (powerSystem === "steadicam" && (parseNum(batteryWh) ?? 0) <= 0) {
+      setShowSteadiPreset(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [powerSystem]);
 
   // iOS-friendly picker state
@@ -1139,9 +1164,11 @@ export default function PowerVibe() {
   }
   function applySteadicamPreset() {
     setPowerSystem("steadicam");
-    setPowerSource("steadicam");
+    setPowerSource(steadiWiring === "parallel" ? "steadicam-par" : "steadicam-seq");
 
-    const preset = BATTERY_PRESETS.find((item) => item.label === steadiBatteryLabel);
+    const preset =
+      BATTERY_PRESETS.find((item) => item.label === steadiBatteryLabel) ||
+      BATTERY_PRESETS.find((b) => (b.volts ?? 14.4) < 20);
     if (preset) {
       const totalWh = Number(preset.wh) * Number(steadiCount || 1);
       setBatteryWh(String(totalWh));
@@ -1191,6 +1218,10 @@ export default function PowerVibe() {
     [powerSystem]
   );
   const isSystemLocked = powerSystem !== "none" && selectedPowerSystem?.totalWh != null;
+  const isSteadicamSystem = powerSystem === "steadicam";
+  const powerSystemLabel =
+    POWER_SYSTEMS.find((s) => s.id === powerSystem)?.label ||
+    "Standard (single battery / block)";
   const filteredAccessories = useMemo(() => {
     return PRESETS.accessories.filter(
       (a) => (a.category || "Other") === accessoryCategory
@@ -1478,6 +1509,36 @@ export default function PowerVibe() {
                     </option>
                   ))}
                 </select>
+                {isSteadicamSystem && (
+                  <div className="mt-2 flex items-start justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50/60 px-3 py-2 text-xs text-neutral-700 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-neutral-200">
+                    <div className="leading-4">
+                      Steadicam assumes multiple batteries. Use the preset to set
+                      battery type + count (e.g. 3× IDX).
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowSteadiPreset(true)}
+                      className="shrink-0 rounded-lg bg-neutral-900 px-2 py-1 text-white hover:opacity-90 dark:bg-white dark:text-black"
+                    >
+                      Open preset
+                    </button>
+                  </div>
+                )}
+                {powerSystem === "steadicam" && (parseNum(batteryWh) ?? 0) <= 0 && (
+                  <div className="mt-2 flex items-start justify-between gap-3 rounded-xl border border-amber-200 bg-amber-50/60 px-3 py-2 text-xs text-neutral-700 dark:border-amber-900/40 dark:bg-amber-900/20 dark:text-neutral-200">
+                    <div className="leading-4">
+                      Steadicam needs total battery energy (e.g. 3× 146Wh = 438Wh).
+                      Use the preset or enter total Wh manually.
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowSteadiPreset(true)}
+                      className="shrink-0 rounded-lg bg-neutral-900 px-2 py-1 text-white hover:opacity-90 dark:bg-white dark:text-black"
+                    >
+                      Open preset
+                    </button>
+                  </div>
+                )}
                 <p className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
                   Choose this for rigs with dedicated multi-battery power (e.g. Ronin 2).
                 </p>
@@ -1697,6 +1758,20 @@ export default function PowerVibe() {
                 {warning}
               </div>
             )}
+            <div className="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+              Power system: <span className="font-medium">{powerSystemLabel}</span> ·{" "}
+              {(systemV ?? 14.4).toFixed(1)}V domain · Derate{" "}
+              {Math.min(Math.max(parseNum(deratePct) ?? 10, 0), 50)}%
+              {powerSystem === "steadicam" && (
+                <>
+                  {" "}
+                  · Mode:{" "}
+                  <span className="font-medium">
+                    {steadiWiring === "parallel" ? "Parallel" : "Sequential"}
+                  </span>
+                </>
+              )}
+            </div>
             {recommend26V && (
               <div className="mt-2 text-sm text-neutral-700 dark:text-neutral-300">
                 💡 Tip: This load is easier to run on{" "}
@@ -1709,9 +1784,16 @@ export default function PowerVibe() {
           <div className={`rounded-2xl shadow-sm border p-4 bg-gradient-to-br from-sky-50 to-indigo-50 border-sky-200 ${isDark ? "text-neutral-900" : ""}`}>
             <h3 className="font-semibold mb-2">Estimated Runtime</h3>
             <BatteryBar hours={hours} />
-            <div className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-              Based on {(computedWh || 0).toFixed(0)} Wh and {totalWatts.toFixed(1)} W
-            </div>
+            {computedWh <= 0 ? (
+              <div className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                Add a battery (Wh) to see runtime — Steadicam presets can auto-calc total
+                Wh.
+              </div>
+            ) : (
+              <div className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                Based on {(computedWh || 0).toFixed(0)} Wh and {totalWatts.toFixed(1)} W
+              </div>
+            )}
           </div>
 
           <div className="rounded-2xl shadow-sm border p-4 bg-gradient-to-br from-neutral-50 to-zinc-50 border-neutral-200 dark:from-neutral-900/30 dark:to-zinc-900/20 dark:border-neutral-800">
@@ -1976,6 +2058,54 @@ Always verify on set.`}
                 Assumes batteries are used sequentially (swap as you go). Runtime varies by
                 sled wiring & distro.
               </p>
+
+              <div className="mb-3">
+                <button
+                  type="button"
+                  onClick={() => setShowSteadiAdvanced((v) => !v)}
+                  className="text-xs underline underline-offset-2 text-neutral-700 dark:text-neutral-300 hover:opacity-80"
+                >
+                  {showSteadiAdvanced ? "Hide advanced" : "Show advanced"}
+                </button>
+
+                {showSteadiAdvanced && (
+                  <div className="mt-2 rounded-xl border dark:border-neutral-800 p-3">
+                    <div className="text-xs font-medium mb-2">
+                      Wiring / usage assumption
+                    </div>
+
+                    <div className="flex flex-col gap-2 text-xs text-neutral-700 dark:text-neutral-300">
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="steadiWiring"
+                          value="sequential"
+                          checked={steadiWiring === "sequential"}
+                          onChange={() => setSteadiWiring("sequential")}
+                        />
+                        Sequential (swap as you go) — most common
+                      </label>
+
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          name="steadiWiring"
+                          value="parallel"
+                          checked={steadiWiring === "parallel"}
+                          onChange={() => setSteadiWiring("parallel")}
+                        />
+                        Parallel / load-share — increases current headroom (runtime
+                        unchanged)
+                      </label>
+                    </div>
+
+                    <p className="mt-2 text-[11px] text-neutral-600 dark:text-neutral-400 leading-4">
+                      Runtime is based on total Wh (energy). Parallel wiring mainly affects
+                      peak current headroom and connector/distro warnings.
+                    </p>
+                  </div>
+                )}
+              </div>
 
               <button
                 className="w-full px-3 py-2 rounded-xl bg-black text-white hover:opacity-90 dark:bg-white dark:text-black"
