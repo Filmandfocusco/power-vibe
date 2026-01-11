@@ -1048,6 +1048,13 @@ export default function PowerVibe() {
     setPowerSource(steadiWiring === "parallel" ? "steadicam-par" : "steadicam-seq");
   }, [powerSystem, steadiWiring]);
 
+  useEffect(() => {
+    if (powerSystem === "steadicam" && (parseNum(batteryWh) ?? 0) <= 0) {
+      setShowSteadiPreset(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [powerSystem]);
+
   // iOS-friendly picker state
   const isIOS =
     typeof navigator !== "undefined" && /iP(ad|hone|od)/.test(navigator.userAgent);
@@ -1159,7 +1166,9 @@ export default function PowerVibe() {
     setPowerSystem("steadicam");
     setPowerSource(steadiWiring === "parallel" ? "steadicam-par" : "steadicam-seq");
 
-    const preset = BATTERY_PRESETS.find((item) => item.label === steadiBatteryLabel);
+    const preset =
+      BATTERY_PRESETS.find((item) => item.label === steadiBatteryLabel) ||
+      BATTERY_PRESETS.find((b) => (b.volts ?? 14.4) < 20);
     if (preset) {
       const totalWh = Number(preset.wh) * Number(steadiCount || 1);
       setBatteryWh(String(totalWh));
